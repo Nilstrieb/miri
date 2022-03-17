@@ -1,0 +1,21 @@
+error: Undefined Behavior: alloc968 has size 2, so pointer to 4 bytes starting at offset 0 is out-of-bounds
+   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/boxed.rs:977:9
+    |
+977 |         Box(unsafe { Unique::new_unchecked(raw) }, alloc)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ alloc968 has size 2, so pointer to 4 bytes starting at offset 0 is out-of-bounds
+    |
+    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+            
+    = note: inside `std::boxed::Box::<u32>::from_raw_in` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/boxed.rs:977:9
+    = note: inside `std::boxed::Box::<u32>::from_raw` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/boxed.rs:921:18
+note: inside `main` at $DIR/issue-miri-1050-1.rs:5:5
+   --> $DIR/issue-miri-1050-1.rs:5:5
+    |
+5   |     Box::from_raw(ptr as *mut u32);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

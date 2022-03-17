@@ -1,0 +1,23 @@
+error: Undefined Behavior: trying to reborrow <2075> for SharedReadWrite permission at alloc978[0x0], but that tag does not exist in the borrow stack for this location
+  --> $DIR/box-cell-alias.rs:9:14
+   |
+9  |     unsafe { (*ptr).set(20); } //~ ERROR does not exist in the borrow stack
+   |              ^^^^^^^^^^^^^^
+   |              |
+   |              trying to reborrow <2075> for SharedReadWrite permission at alloc978[0x0], but that tag does not exist in the borrow stack for this location
+   |              this error occurs as part of a reborrow at alloc978[0x0..0x1]
+   |
+   = help: this indicates a potential bug in the program: it performed an invalid operation, but the rules it violated are still experimental
+   = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+           
+   = note: inside `helper` at $DIR/box-cell-alias.rs:9:14
+note: inside `main` at $DIR/box-cell-alias.rs:16:15
+  --> $DIR/box-cell-alias.rs:16:15
+   |
+16 |     let res = helper(val, ptr);
+   |               ^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

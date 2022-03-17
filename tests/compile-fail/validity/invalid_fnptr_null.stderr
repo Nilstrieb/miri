@@ -1,0 +1,15 @@
+error: Undefined Behavior: type validation failed: encountered a null function pointer
+ --> $DIR/invalid_fnptr_null.rs:4:29
+  |
+4 |     let _b: fn() = unsafe { std::mem::transmute(0usize) }; //~ ERROR encountered a null function pointer
+  |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered a null function pointer
+  |
+  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+          
+  = note: inside `main` at $DIR/invalid_fnptr_null.rs:4:29
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

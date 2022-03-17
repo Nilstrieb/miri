@@ -1,0 +1,20 @@
+error: Undefined Behavior: entering unreachable code
+  --> $DIR/never_transmute_void.rs:10:11
+   |
+10 |     match v {} //~ ERROR entering unreachable code
+   |           ^ entering unreachable code
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `f` at $DIR/never_transmute_void.rs:10:11
+note: inside `main` at $DIR/never_transmute_void.rs:17:5
+  --> $DIR/never_transmute_void.rs:17:5
+   |
+17 |     f(v); //~ inside `main`
+   |     ^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

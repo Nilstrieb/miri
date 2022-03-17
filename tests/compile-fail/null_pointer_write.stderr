@@ -1,0 +1,15 @@
+error: Undefined Behavior: null pointer is not a valid pointer for this operation
+ --> $DIR/null_pointer_write.rs:3:14
+  |
+3 |     unsafe { *std::ptr::null_mut() = 0i32 }; //~ ERROR null pointer is not a valid pointer for this operation
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ null pointer is not a valid pointer for this operation
+  |
+  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+          
+  = note: inside `main` at $DIR/null_pointer_write.rs:3:14
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

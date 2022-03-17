@@ -1,0 +1,20 @@
+error: Undefined Behavior: not granting access to tag <1901> because incompatible item is protected: [SharedReadOnly for <1930> (call 619)]
+  --> $DIR/aliasing_mut4.rs:5:1
+   |
+5  | pub fn safe(_x: &i32, _y: &mut Cell<i32>) {} //~ ERROR protect
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not granting access to tag <1901> because incompatible item is protected: [SharedReadOnly for <1930> (call 619)]
+   |
+   = help: this indicates a potential bug in the program: it performed an invalid operation, but the rules it violated are still experimental
+   = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+           
+   = note: inside `safe` at $DIR/aliasing_mut4.rs:5:1
+note: inside `main` at $DIR/aliasing_mut4.rs:16:5
+  --> $DIR/aliasing_mut4.rs:16:5
+   |
+16 |     safe_raw(xshr, xraw as *mut _);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

@@ -1,0 +1,14 @@
+error[E0423]: expected function, found macro `println`
+ --> $DIR/rustc-error.rs:3:5
+  |
+3 |     println("Hello, world!"); //~ ERROR expected function, found macro
+  |     ^^^^^^^ not a function
+  |
+help: use `!` to invoke the macro
+  |
+3 |     println!("Hello, world!"); //~ ERROR expected function, found macro
+  |            +
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0423`.

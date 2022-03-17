@@ -1,0 +1,20 @@
+error: found `malloc` symbol definition that clashes with a built-in shim
+  --> $DIR/exported_symbol_shim_clashing.rs:12:9
+   |
+12 |         malloc(0);
+   |         ^^^^^^^^^ found `malloc` symbol definition that clashes with a built-in shim
+   |
+help: the `malloc` symbol is defined here
+  --> $DIR/exported_symbol_shim_clashing.rs:2:1
+   |
+2  | / extern "C" fn malloc(_: usize) -> *mut std::ffi::c_void {
+3  | |     //~^ HELP the `malloc` symbol is defined here
+4  | |     unreachable!()
+5  | | }
+   | |_^
+   = note: inside `main` at $DIR/exported_symbol_shim_clashing.rs:12:9
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

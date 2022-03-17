@@ -1,0 +1,17 @@
+warning: thread support is experimental and incomplete: weak memory effects are not emulated.
+
+error: Undefined Behavior: Data race detected between Deallocate on Thread(id = 1) and Read on Thread(id = 2) at alloc2613 (current vector clock = VClock([3, 7]), conflicting timestamp = VClock([0, 0, 7]))
+  --> $DIR/dealloc_read_race_stack.rs:40:13
+   |
+40 |             } //~ ERROR Data race detected between Deallocate on Thread(id = 1) and Read on Thread(id = 2)
+   |             ^ Data race detected between Deallocate on Thread(id = 1) and Read on Thread(id = 2) at alloc2613 (current vector clock = VClock([3, 7]), conflicting timestamp = VClock([0, 0, 7]))
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside closure at $DIR/dealloc_read_race_stack.rs:40:13
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error; 1 warning emitted
+

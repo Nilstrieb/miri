@@ -1,0 +1,26 @@
+error: unsupported operation: `open` not available when isolation is enabled
+   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/fs.rs:843:36
+    |
+843 |         let fd = cvt_r(|| unsafe { open64(path.as_ptr(), flags, opts.mode as c_int) })?;
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `open` not available when isolation is enabled
+    |
+    = help: pass the flag `-Zmiri-disable-isolation` to disable isolation;
+    = help: or pass `-Zmiri-isolation-error=warn` to configure Miri to return an error code from isolated operations (if supported for that operation) and continue with a warning
+            
+    = note: inside closure at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/fs.rs:843:36
+    = note: inside `std::sys::unix::cvt_r::<i32, [closure@std::sys::unix::fs::File::open_c::{closure#0}]>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/mod.rs:212:19
+    = note: inside `std::sys::unix::fs::File::open_c` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/fs.rs:843:18
+    = note: inside `std::sys::unix::fs::File::open` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/fs.rs:831:9
+    = note: inside `std::fs::OpenOptions::_open` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/fs.rs:952:9
+    = note: inside `std::fs::OpenOptions::open::<&std::path::Path>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/fs.rs:948:9
+    = note: inside `std::fs::File::open::<&str>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/fs.rs:328:9
+note: inside `main` at $DIR/isolated_file.rs:5:17
+   --> $DIR/isolated_file.rs:5:17
+    |
+5   |     let _file = std::fs::File::open("file.txt").unwrap();
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

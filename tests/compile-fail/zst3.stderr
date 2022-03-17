@@ -1,0 +1,15 @@
+error: Undefined Behavior: dereferencing pointer failed: alloc970 has size 1, so pointer at offset 2 is out-of-bounds
+  --> $DIR/zst3.rs:17:14
+   |
+17 |     unsafe { *(x as *mut [u8; 0]) = zst_val; } //~ ERROR out-of-bounds
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereferencing pointer failed: alloc970 has size 1, so pointer at offset 2 is out-of-bounds
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/zst3.rs:17:14
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

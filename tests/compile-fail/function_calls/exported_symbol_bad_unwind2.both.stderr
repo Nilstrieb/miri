@@ -1,0 +1,23 @@
+thread 'main' panicked at 'explicit panic', $DIR/exported_symbol_bad_unwind2.rs:9:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: abnormal termination: the program aborted execution
+  --> $DIR/exported_symbol_bad_unwind2.rs:6:1
+   |
+6  | / extern "C-unwind" fn nounwind() {
+7  | |     //[definition]~^ ERROR abnormal termination: the program aborted execution
+8  | |     //[both]~^^ ERROR abnormal termination: the program aborted execution
+9  | |     panic!();
+10 | | }
+   | |_^ the program aborted execution
+   |
+   = note: inside `nounwind` at $DIR/exported_symbol_bad_unwind2.rs:6:1
+note: inside `main` at $DIR/exported_symbol_bad_unwind2.rs:17:14
+  --> $DIR/exported_symbol_bad_unwind2.rs:17:14
+   |
+17 |     unsafe { nounwind() }
+   |              ^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

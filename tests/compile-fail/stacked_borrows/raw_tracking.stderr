@@ -1,0 +1,18 @@
+error: Undefined Behavior: attempting a write access using <1981> at alloc953[0x0], but that tag does not exist in the borrow stack for this location
+  --> $DIR/raw_tracking.rs:10:14
+   |
+10 |     unsafe { *raw1 = 13; } //~ ERROR does not exist in the borrow stack
+   |              ^^^^^^^^^^
+   |              |
+   |              attempting a write access using <1981> at alloc953[0x0], but that tag does not exist in the borrow stack for this location
+   |              this error occurs as part of an access at alloc953[0x0..0x4]
+   |
+   = help: this indicates a potential bug in the program: it performed an invalid operation, but the rules it violated are still experimental
+   = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+           
+   = note: inside `main` at $DIR/raw_tracking.rs:10:14
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

@@ -1,0 +1,20 @@
+error: Undefined Behavior: 0x1 is not a valid pointer
+   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mut_ptr.rs:307:18
+    |
+307 |         unsafe { intrinsics::offset(self, count) as *mut T }
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 0x1 is not a valid pointer
+    |
+    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+            
+    = note: inside `std::ptr::mut_ptr::<impl *mut u8>::offset` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mut_ptr.rs:307:18
+note: inside `main` at $DIR/ptr_offset_int_plus_int.rs:6:20
+   --> $DIR/ptr_offset_int_plus_int.rs:6:20
+    |
+6   |         let _val = (1 as *mut u8).offset(1);
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

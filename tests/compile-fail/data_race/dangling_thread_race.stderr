@@ -1,0 +1,17 @@
+warning: thread support is experimental and incomplete: weak memory effects are not emulated.
+
+error: Undefined Behavior: Data race detected between Write on Thread(id = 0, name = "main") and Write on Thread(id = 1) at alloc1015 (current vector clock = VClock([25, 0, 11]), conflicting timestamp = VClock([0, 6]))
+  --> $DIR/dangling_thread_race.rs:39:9
+   |
+39 |         *c.0 = 64; //~ ERROR Data race detected between Write on Thread(id = 0, name = "main") and Write on Thread(id = 1)
+   |         ^^^^^^^^^ Data race detected between Write on Thread(id = 0, name = "main") and Write on Thread(id = 1) at alloc1015 (current vector clock = VClock([25, 0, 11]), conflicting timestamp = VClock([0, 6]))
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/dangling_thread_race.rs:39:9
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error; 1 warning emitted
+

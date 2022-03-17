@@ -1,0 +1,15 @@
+error: Undefined Behavior: using alloc967 as function pointer but it does not point to a function
+  --> $DIR/execute_memory.rs:10:9
+   |
+10 |         f() //~ ERROR function pointer but it does not point to a function
+   |         ^^^ using alloc967 as function pointer but it does not point to a function
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/execute_memory.rs:10:9
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

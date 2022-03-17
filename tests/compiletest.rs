@@ -43,24 +43,16 @@ fn run_tests(mode: &str, path: &str, target: &str) {
     config.src_base = PathBuf::from(path);
     config.target = target.to_owned();
     config.target_rustcflags = Some(flags);
+    if let Ok(_) = env::var("MIRI_BLESS") {
+        config.bless = true;
+    }
     compiletest::run_tests(&config);
 }
 
-fn compile_fail(path: &str, target: &str) {
+fn ui(path: &str, target: &str) {
     eprintln!(
         "{}",
-        format!("## Running compile-fail tests in {} against miri for target {}", path, target)
-            .green()
-            .bold()
-    );
-
-    run_tests("compile-fail", path, target);
-}
-
-fn miri_pass(path: &str, target: &str) {
-    eprintln!(
-        "{}",
-        format!("## Running run-pass tests in {} against miri for target {}", path, target)
+        format!("## Running ui tests in {} against miri for target {}", path, target)
             .green()
             .bold()
     );
@@ -88,6 +80,6 @@ fn main() {
     env::set_var("RUST_BACKTRACE", "1");
 
     let target = get_target();
-    miri_pass("tests/run-pass", &target);
-    compile_fail("tests/compile-fail", &target);
+    ui("tests/run-pass", &target);
+    ui("tests/compile-fail", &target);
 }

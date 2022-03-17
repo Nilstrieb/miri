@@ -1,0 +1,16 @@
+error: Undefined Behavior: accessing memory with alignment 2, but alignment 4 is required
+  --> $DIR/unaligned_ptr_addr_of.rs:11:27
+   |
+11 |         let _x = unsafe { ptr::addr_of!(*x) }; //~ ERROR memory with alignment 2, but alignment 4 is required
+   |                           ^^^^^^^^^^^^^^^^^ accessing memory with alignment 2, but alignment 4 is required
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1482:5
+   = note: this error originates in the macro `ptr::addr_of` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

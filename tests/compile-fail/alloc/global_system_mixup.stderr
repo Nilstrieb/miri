@@ -1,0 +1,21 @@
+error: Undefined Behavior: deallocating alloc975, which is Rust heap memory, using C heap deallocation operation
+  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/alloc.rs:42:9
+   |
+42 |         libc::free(ptr as *mut libc::c_void)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ deallocating alloc975, which is Rust heap memory, using C heap deallocation operation
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `std::sys::unix::alloc::<impl std::alloc::GlobalAlloc for std::alloc::System>::dealloc` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/alloc.rs:42:9
+   = note: inside `<std::alloc::System as std::alloc::Allocator>::deallocate` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/alloc.rs:218:22
+note: inside `main` at $DIR/global_system_mixup.rs:12:14
+  --> $DIR/global_system_mixup.rs:12:14
+   |
+12 |     unsafe { System.deallocate(ptr, l); }
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

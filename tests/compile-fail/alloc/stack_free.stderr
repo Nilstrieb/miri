@@ -1,0 +1,24 @@
+error: Undefined Behavior: deallocating alloc508, which is stack variable memory, using Rust heap deallocation operation
+   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:105:14
+    |
+105 |     unsafe { __rust_dealloc(ptr, layout.size(), layout.align()) }
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ deallocating alloc508, which is stack variable memory, using Rust heap deallocation operation
+    |
+    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+            
+    = note: inside `std::alloc::dealloc` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:105:14
+    = note: inside `<std::alloc::Global as std::alloc::Allocator>::deallocate` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:242:22
+    = note: inside `alloc::alloc::box_free::<i32, std::alloc::Global>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:340:9
+    = note: inside `std::ptr::drop_in_place::<std::boxed::Box<i32>> - shim(Some(std::boxed::Box<i32>))` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:188:1
+    = note: inside `std::mem::drop::<std::boxed::Box<i32>>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/mem/mod.rs:965:24
+note: inside `main` at $DIR/stack_free.rs:9:5
+   --> $DIR/stack_free.rs:9:5
+    |
+9   |     drop(bad_box);
+    |     ^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

@@ -1,0 +1,15 @@
+error: Undefined Behavior: accessing memory with alignment 16, but alignment 256 is required
+  --> $DIR/dyn_alignment.rs:19:20
+   |
+19 |         let _ptr = &*ptr; //~ERROR alignment 256 is required
+   |                    ^^^^^ accessing memory with alignment 16, but alignment 256 is required
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/dyn_alignment.rs:19:20
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

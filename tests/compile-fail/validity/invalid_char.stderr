@@ -1,0 +1,15 @@
+error: Undefined Behavior: type validation failed: encountered 0xffffffff, but expected a valid unicode scalar value (in `0..=0x10FFFF` but not in `0xD800..=0xDFFF`)
+ --> $DIR/invalid_char.rs:3:31
+  |
+3 |     let _val = match unsafe { std::mem::transmute::<i32, char>(-1) } { //~ ERROR encountered 0xffffffff, but expected a valid unicode sca...
+  |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered 0xffffffff, but expected a valid unicode scalar value (in `0..=0x10FFFF` but not in `0xD800..=0xDFFF`)
+  |
+  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+          
+  = note: inside `main` at $DIR/invalid_char.rs:3:31
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

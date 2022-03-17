@@ -1,0 +1,26 @@
+thread 'main' panicked at 'panicking from libstd', $DIR/panic_abort1.rs:5:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: abnormal termination: the program aborted execution
+  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/panic_abort/src/lib.rs:43:17
+   |
+43 |                 libc::abort();
+   |                 ^^^^^^^^^^^^^ the program aborted execution
+   |
+   = note: inside `panic_abort::__rust_start_panic::abort` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/panic_abort/src/lib.rs:43:17
+   = note: inside `panic_abort::__rust_start_panic` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/panic_abort/src/lib.rs:38:5
+   = note: inside `std::panicking::rust_panic` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:746:9
+   = note: inside `std::panicking::rust_panic_with_hook` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:716:5
+   = note: inside closure at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:617:9
+   = note: inside `std::sys_common::backtrace::__rust_end_short_backtrace::<[closure@std::rt::begin_panic<&str>::{closure#0}], !>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:138:18
+   = note: inside `std::rt::begin_panic::<&str>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:616:12
+note: inside `main` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panic.rs:22:9
+  --> $DIR/panic_abort1.rs:5:5
+   |
+5  |     std::panic!("panicking from libstd");
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: this error originates in the macro `$crate::panic::panic_2015` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

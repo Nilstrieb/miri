@@ -1,0 +1,22 @@
+error: multiple definitions of symbol `foo`
+  --> $DIR/exported_symbol_clashing.rs:13:14
+   |
+13 |     unsafe { foo() }
+   |              ^^^^^ multiple definitions of symbol `foo`
+   |
+help: it's first defined here, in crate `exported_symbol_clashing`
+  --> $DIR/exported_symbol_clashing.rs:2:1
+   |
+2  | fn foo() {}
+   | ^^^^^^^^
+help: then it's defined here again, in crate `exported_symbol_clashing`
+  --> $DIR/exported_symbol_clashing.rs:6:1
+   |
+6  | fn bar() {}
+   | ^^^^^^^^
+   = note: inside `main` at $DIR/exported_symbol_clashing.rs:13:14
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

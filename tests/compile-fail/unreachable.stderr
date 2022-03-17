@@ -1,0 +1,20 @@
+error: Undefined Behavior: entering unreachable code
+  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/hint.rs:51:14
+   |
+51 |     unsafe { intrinsics::unreachable() }
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^ entering unreachable code
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `std::hint::unreachable_unchecked` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/hint.rs:51:14
+note: inside `main` at $DIR/unreachable.rs:3:14
+  --> $DIR/unreachable.rs:3:14
+   |
+3  |     unsafe { std::hint::unreachable_unchecked() }
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

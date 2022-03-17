@@ -1,0 +1,15 @@
+error: Undefined Behavior: unlocked a PTHREAD_MUTEX_NORMAL mutex that was not locked by the current thread
+  --> $DIR/libc_pthread_mutex_normal_unlock_unlocked.rs:15:9
+   |
+15 |         libc::pthread_mutex_unlock(&mut mutex as *mut _); //~ ERROR was not locked
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unlocked a PTHREAD_MUTEX_NORMAL mutex that was not locked by the current thread
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/libc_pthread_mutex_normal_unlock_unlocked.rs:15:9
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

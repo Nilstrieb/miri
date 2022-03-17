@@ -1,0 +1,20 @@
+error: Undefined Behavior: pointer to alloc955 was dereferenced after this allocation got freed
+  --> $DIR/storage_dead_dangling.rs:11:14
+   |
+11 |     unsafe { &mut *(LEAK as *mut i32) }; //~ ERROR dereferenced after this allocation got freed
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^ pointer to alloc955 was dereferenced after this allocation got freed
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `evil` at $DIR/storage_dead_dangling.rs:11:14
+note: inside `main` at $DIR/storage_dead_dangling.rs:23:5
+  --> $DIR/storage_dead_dangling.rs:23:5
+   |
+23 |     evil();
+   |     ^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

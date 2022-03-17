@@ -1,0 +1,20 @@
+error: Undefined Behavior: dereferencing pointer failed: alloc969 has size 9, so pointer to 1 byte starting at offset 9 is out-of-bounds
+   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/../../portable-simd/crates/core_simd/src/vector.rs:387:13
+    |
+387 |             intrinsics::simd_scatter(self, ptrs, enable.to_int())
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereferencing pointer failed: alloc969 has size 9, so pointer to 1 byte starting at offset 9 is out-of-bounds
+    |
+    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+            
+    = note: inside `std::simd::Simd::<i8, 4_usize>::scatter_select_unchecked` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/../../portable-simd/crates/core_simd/src/vector.rs:387:13
+note: inside `main` at $DIR/simd-scatter.rs:8:5
+   --> $DIR/simd-scatter.rs:8:5
+    |
+8   |     Simd::from_array([-27, 82, -41, 124]).scatter_select_unchecked(&mut vec, Mask::splat(true), idxs);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

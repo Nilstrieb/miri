@@ -1,0 +1,95 @@
+thread 'main' panicked at 'first', $DIR/double_panic.rs:11:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+thread 'main' panicked at 'second', $DIR/double_panic.rs:6:9
+stack backtrace:
+   0:           0x273121 - std::backtrace_rs::backtrace::miri::trace_unsynchronized::<&mut [closure@std::sys_common::backtrace::_print_fmt::{closure#1}]>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/../../backtrace/src/backtrace/miri.rs:65:18
+   1:           0x272f99 - std::backtrace_rs::backtrace::miri::trace::<&mut [closure@std::sys_common::backtrace::_print_fmt::{closure#1}]>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/../../backtrace/src/backtrace/miri.rs:51:14
+   2:           0x219151 - std::backtrace_rs::backtrace::trace_unsynchronized::<[closure@std::sys_common::backtrace::_print_fmt::{closure#1}]>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/../../backtrace/src/backtrace/mod.rs:66:5
+   3:           0x1fc9e9 - std::sys_common::backtrace::_print_fmt
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:66:5
+   4:           0x1faeaf - <std::sys_common::backtrace::_print::DisplayBacktrace as std::fmt::Display>::fmt
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:45:22
+   5:           0x502cb2 - std::fmt::write
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/fmt/mod.rs:1190:17
+   6:            0xe90a2 - <std::sys::unix::stdio::Stderr as std::io::Write>::write_fmt
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/io/mod.rs:1655:15
+   7:           0x1fc6ef - std::sys_common::backtrace::_print
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:48:5
+   8:           0x1fc597 - std::sys_common::backtrace::print
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:35:9
+   9:           0x212ae3 - std::panicking::default_hook::{closure#1}
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:295:22
+  10:           0x212dc5 - std::panicking::default_hook
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:314:9
+  11:           0x216955 - std::panicking::rust_panic_with_hook
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:698:17
+  12:           0x215bd5 - std::rt::begin_panic::<&str>::{closure#0}
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:617:9
+  13:           0x1fd2bc - std::sys_common::backtrace::__rust_end_short_backtrace::<[closure@std::rt::begin_panic<&str>::{closure#0}], !>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:138:18
+  14:           0x215ba0 - std::rt::begin_panic::<&str>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:616:12
+  15:            0x3a757 - <Foo as std::ops::Drop>::drop
+                               at $DIR/double_panic.rs:6:9
+  16:           0x38213f - std::ptr::drop_in_place::<Foo> - shim(Some(Foo))
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:188:1
+  17:            0x201a4 - main
+                               at $DIR/double_panic.rs:12:1
+  18:           0x3eee8b - <fn() as std::ops::FnOnce<()>>::call_once - shim(fn())
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ops/function.rs:227:5
+  19:           0x1fd11b - std::sys_common::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:122:18
+  20:            0x4399c - std::rt::lang_start::<()>::{closure#0}
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/rt.rs:145:18
+  21:           0x3ef1bf - std::ops::function::impls::<impl std::ops::FnOnce<()> for &dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe>::call_once
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ops/function.rs:259:13
+  22:           0x214ae3 - std::panicking::r#try::do_call::<&dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe, i32>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:492:40
+  23:           0x214486 - std::panicking::r#try::<i32, &dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:456:19
+  24:           0x18754d - std::panic::catch_unwind::<&dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe, i32>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panic.rs:137:14
+  25:            0x437f1 - std::rt::lang_start_internal::{closure#2}
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/rt.rs:128:48
+  26:           0x214b0f - std::panicking::r#try::do_call::<[closure@std::rt::lang_start_internal::{closure#2}], isize>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:492:40
+  27:           0x2144b1 - std::panicking::r#try::<isize, [closure@std::rt::lang_start_internal::{closure#2}]>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:456:19
+  28:           0x187579 - std::panic::catch_unwind::<[closure@std::rt::lang_start_internal::{closure#2}], isize>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panic.rs:137:14
+  29:            0x437f3 - std::rt::lang_start_internal
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/rt.rs:128:20
+  30:            0x439cd - std::rt::lang_start::<()>
+                               at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/rt.rs:144:17
+thread panicked while panicking. aborting.
+error: abnormal termination: the program aborted execution
+   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/mod.rs:259:14
+    |
+259 |     unsafe { libc::abort() }
+    |              ^^^^^^^^^^^^^ the program aborted execution
+    |
+    = note: inside `std::sys::unix::abort_internal` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/mod.rs:259:14
+    = note: inside `std::panicking::rust_panic_with_hook` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:713:9
+    = note: inside closure at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:617:9
+    = note: inside `std::sys_common::backtrace::__rust_end_short_backtrace::<[closure@std::rt::begin_panic<&str>::{closure#0}], !>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:138:18
+    = note: inside `std::rt::begin_panic::<&str>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:616:12
+note: inside `<Foo as std::ops::Drop>::drop` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panic.rs:22:9
+   --> $DIR/double_panic.rs:6:9
+    |
+6   |         panic!("second");
+    |         ^^^^^^^^^^^^^^^^
+    = note: inside `std::ptr::drop_in_place::<Foo> - shim(Some(Foo))` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:188:1
+note: inside `main` at $DIR/double_panic.rs:12:1
+   --> $DIR/double_panic.rs:12:1
+    |
+12  | }
+    | ^
+    = note: this error originates in the macro `$crate::panic::panic_2015` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

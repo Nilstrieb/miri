@@ -1,0 +1,15 @@
+error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory
+  --> $DIR/pointer_partial_overwrite.rs:15:13
+   |
+15 |     let x = *p; //~ ERROR this operation requires initialized memory
+   |             ^^ using uninitialized data, but this operation requires initialized memory
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/pointer_partial_overwrite.rs:15:13
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

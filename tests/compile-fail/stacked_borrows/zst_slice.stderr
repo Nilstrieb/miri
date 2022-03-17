@@ -1,0 +1,23 @@
+error: Undefined Behavior: trying to reborrow <2043> for SharedReadOnly permission at alloc966[0x4], but that tag does not exist in the borrow stack for this location
+   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/slice/mod.rs:392:18
+    |
+392 |         unsafe { &*index.get_unchecked(self) }
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |                  |
+    |                  trying to reborrow <2043> for SharedReadOnly permission at alloc966[0x4], but that tag does not exist in the borrow stack for this location
+    |                  this error occurs as part of a reborrow at alloc966[0x4..0x8]
+    |
+    = help: this indicates a potential bug in the program: it performed an invalid operation, but the rules it violated are still experimental
+    = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+            
+    = note: inside `core::slice::<impl [i32]>::get_unchecked::<usize>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/slice/mod.rs:392:18
+note: inside `main` at $DIR/zst_slice.rs:9:21
+   --> $DIR/zst_slice.rs:9:21
+    |
+9   |         assert_eq!(*s.get_unchecked(1), 2);
+    |                     ^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

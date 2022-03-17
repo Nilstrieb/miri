@@ -1,0 +1,20 @@
+error: Undefined Behavior: incorrect number of arguments for `open` with `O_CREAT`: got 2, expected 3
+  --> $DIR/unix_open_missing_required_mode.rs:15:24
+   |
+15 |     let _fd = unsafe { libc::open(name_ptr, libc::O_CREAT) }; //~ ERROR Undefined Behavior: incorrect number of arguments for `open` with...
+   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ incorrect number of arguments for `open` with `O_CREAT`: got 2, expected 3
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `test_file_open_missing_needed_mode` at $DIR/unix_open_missing_required_mode.rs:15:24
+note: inside `main` at $DIR/unix_open_missing_required_mode.rs:9:5
+  --> $DIR/unix_open_missing_required_mode.rs:9:5
+   |
+9  |     test_file_open_missing_needed_mode();
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+

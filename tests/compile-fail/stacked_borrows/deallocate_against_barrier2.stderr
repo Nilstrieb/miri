@@ -1,0 +1,38 @@
+error: Undefined Behavior: deallocating while item is protected: [SharedReadWrite for <2025> (call 650)]
+   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:105:14
+    |
+105 |     unsafe { __rust_dealloc(ptr, layout.size(), layout.align()) }
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ deallocating while item is protected: [SharedReadWrite for <2025> (call 650)]
+    |
+    = help: this indicates a potential bug in the program: it performed an invalid operation, but the rules it violated are still experimental
+    = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+            
+    = note: inside `std::alloc::dealloc` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:105:14
+    = note: inside `<std::alloc::Global as std::alloc::Allocator>::deallocate` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:242:22
+    = note: inside `alloc::alloc::box_free::<std::cell::Cell<i32>, std::alloc::Global>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:340:9
+    = note: inside `std::ptr::drop_in_place::<std::boxed::Box<std::cell::Cell<i32>>> - shim(Some(std::boxed::Box<std::cell::Cell<i32>>))` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:188:1
+    = note: inside `std::mem::drop::<std::boxed::Box<std::cell::Cell<i32>>>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/mem/mod.rs:965:24
+note: inside closure at $DIR/deallocate_against_barrier2.rs:15:9
+   --> $DIR/deallocate_against_barrier2.rs:15:9
+    |
+15  |         drop(unsafe { Box::from_raw(raw) });
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: inside `<[closure@$DIR/deallocate_against_barrier2.rs:13:46: 16:6] as std::ops::FnOnce<(&std::cell::Cell<i32>,)>>::call_once - shim` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ops/function.rs:227:5
+note: inside `inner` at $DIR/deallocate_against_barrier2.rs:9:5
+   --> $DIR/deallocate_against_barrier2.rs:9:5
+    |
+9   |     f(x)
+    |     ^^^^
+note: inside `main` at $DIR/deallocate_against_barrier2.rs:13:5
+   --> $DIR/deallocate_against_barrier2.rs:13:5
+    |
+13  | /     inner(Box::leak(Box::new(Cell::new(0))), |x| {
+14  | |         let raw = x as *const _ as *mut Cell<i32>;
+15  | |         drop(unsafe { Box::from_raw(raw) });
+16  | |     });
+    | |______^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to previous error
+
