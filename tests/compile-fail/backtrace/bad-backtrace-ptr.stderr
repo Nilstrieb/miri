@@ -1,13 +1,13 @@
 error: Undefined Behavior: null pointer is not a valid pointer for this operation
- --> $DIR/bad-backtrace-ptr.rs:7:9
-  |
-7 |         miri_resolve_frame(0 as *mut _, 0); //~ ERROR null pointer is not a valid pointer for this operation
-  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ null pointer is not a valid pointer for this operation
-  |
-  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-          
-  = note: inside `main` at $DIR/bad-backtrace-ptr.rs:7:9
+  --> $DIR/bad-backtrace-ptr.rs:7:9
+   |
+LL |         miri_resolve_frame(0 as *mut _, 0); //~ ERROR null pointer is not a valid pointer for this operation
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ null pointer is not a valid pointer for this operation
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/bad-backtrace-ptr.rs:7:9
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

@@ -1,7 +1,7 @@
 error: Undefined Behavior: type validation failed: encountered 0, but expected something greater or equal to 1
   --> $DIR/nonzero.rs:12:14
    |
-12 |     let _x = Some(unsafe { NonZero(0) }); //~ ERROR encountered 0, but expected something greater or equal to 1
+LL |     let _x = Some(unsafe { NonZero(0) }); //~ ERROR encountered 0, but expected something greater or equal to 1
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered 0, but expected something greater or equal to 1
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

@@ -1,7 +1,7 @@
 error: Undefined Behavior: accessing memory with alignment 16, but alignment 256 is required
   --> $DIR/dyn_alignment.rs:19:20
    |
-19 |         let _ptr = &*ptr; //~ERROR alignment 256 is required
+LL |         let _ptr = &*ptr; //~ERROR alignment 256 is required
    |                    ^^^^^ accessing memory with alignment 16, but alignment 256 is required
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

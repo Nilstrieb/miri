@@ -3,7 +3,7 @@ warning: thread support is experimental and incomplete: weak memory effects are 
 error: Undefined Behavior: trying to join a detached or already joined thread
   --> $DIR/libc_pthread_join_main.rs:15:24
    |
-15 | ...   assert_eq!(libc::pthread_join(thread_id, ptr::null_mut()), 0); //~ ERROR: Undefined Behavior: trying to join a detached or already ...
+LL | ...   assert_eq!(libc::pthread_join(thread_id, ptr::null_mut()), 0); //~ ERROR: Undefined Behavior: trying to join a detached or already ...
    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ trying to join a detached or already joined thread
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

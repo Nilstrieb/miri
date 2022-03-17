@@ -1,7 +1,7 @@
 error: Undefined Behavior: unwinding past a stack frame that does not allow unwinding
   --> $DIR/unwind_panic_abort.rs:10:14
    |
-10 |     unsafe { miri_start_panic(&mut 0); } //~ ERROR unwinding past a stack frame that does not allow unwinding
+LL |     unsafe { miri_start_panic(&mut 0); } //~ ERROR unwinding past a stack frame that does not allow unwinding
    |              ^^^^^^^^^^^^^^^^^^^^^^^^ unwinding past a stack frame that does not allow unwinding
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

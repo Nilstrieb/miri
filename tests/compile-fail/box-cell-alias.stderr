@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <2075> for SharedReadWrite permission at alloc978[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/box-cell-alias.rs:9:14
    |
-9  |     unsafe { (*ptr).set(20); } //~ ERROR does not exist in the borrow stack
+LL |     unsafe { (*ptr).set(20); } //~ ERROR does not exist in the borrow stack
    |              ^^^^^^^^^^^^^^
    |              |
    |              trying to reborrow <2075> for SharedReadWrite permission at alloc978[0x0], but that tag does not exist in the borrow stack for this location
@@ -14,7 +14,7 @@ error: Undefined Behavior: trying to reborrow <2075> for SharedReadWrite permiss
 note: inside `main` at $DIR/box-cell-alias.rs:16:15
   --> $DIR/box-cell-alias.rs:16:15
    |
-16 |     let res = helper(val, ptr);
+LL |     let res = helper(val, ptr);
    |               ^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

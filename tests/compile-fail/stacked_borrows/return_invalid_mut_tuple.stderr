@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <1906> for Unique permission at alloc953[0x4], but that tag does not exist in the borrow stack for this location
   --> $DIR/return_invalid_mut_tuple.rs:11:5
    |
-11 |     foo(&mut (1, 2)).0; //~ ERROR: borrow stack
+LL |     foo(&mut (1, 2)).0; //~ ERROR: borrow stack
    |     ^^^^^^^^^^^^^^^^^^
    |     |
    |     trying to reborrow <1906> for Unique permission at alloc953[0x4], but that tag does not exist in the borrow stack for this location

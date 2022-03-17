@@ -1,19 +1,19 @@
 error: Undefined Behavior: memory access failed: null pointer is not a valid pointer
-   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:851:9
-    |
-851 |         copy_nonoverlapping(&src as *const T, dst, 1);
-    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ memory access failed: null pointer is not a valid pointer
-    |
-    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-            
-    = note: inside `std::ptr::write::<[u8; 0]>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:851:9
-    = note: inside `std::ptr::mut_ptr::<impl *mut [u8; 0]>::write` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mut_ptr.rs:1080:18
+  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:851:9
+   |
+LL |         copy_nonoverlapping(&src as *const T, dst, 1);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ memory access failed: null pointer is not a valid pointer
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `std::ptr::write::<[u8; 0]>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:851:9
+   = note: inside `std::ptr::mut_ptr::<impl *mut [u8; 0]>::write` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mut_ptr.rs:1080:18
 note: inside `main` at $DIR/null_pointer_write_zst.rs:10:14
-   --> $DIR/null_pointer_write_zst.rs:10:14
-    |
-10  |     unsafe { std::ptr::null_mut::<[u8; 0]>().write(zst_val) };
-    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  --> $DIR/null_pointer_write_zst.rs:10:14
+   |
+LL |     unsafe { std::ptr::null_mut::<[u8; 0]>().write(zst_val) };
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

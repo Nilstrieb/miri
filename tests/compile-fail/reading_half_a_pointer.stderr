@@ -1,7 +1,7 @@
 error: unsupported operation: unable to turn pointer into raw bytes
   --> $DIR/reading_half_a_pointer.rs:27:18
    |
-27 |         let _x = *d_alias; //~ ERROR unable to turn pointer into raw bytes
+LL |         let _x = *d_alias; //~ ERROR unable to turn pointer into raw bytes
    |                  ^^^^^^^^ unable to turn pointer into raw bytes
    |
    = help: this is likely not a bug in the program; it indicates that the program performed an operation that the interpreter does not support

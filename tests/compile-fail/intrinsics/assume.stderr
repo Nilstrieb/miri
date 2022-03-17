@@ -1,13 +1,13 @@
 error: Undefined Behavior: `assume` intrinsic called with `false`
- --> $DIR/assume.rs:8:9
-  |
-8 |         std::intrinsics::assume(x > 42); //~ `assume` intrinsic called with `false`
-  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `assume` intrinsic called with `false`
-  |
-  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-          
-  = note: inside `main` at $DIR/assume.rs:8:9
+  --> $DIR/assume.rs:8:9
+   |
+LL |         std::intrinsics::assume(x > 42); //~ `assume` intrinsic called with `false`
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `assume` intrinsic called with `false`
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/assume.rs:8:9
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

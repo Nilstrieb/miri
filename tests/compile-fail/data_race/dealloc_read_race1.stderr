@@ -3,7 +3,7 @@ warning: thread support is experimental and incomplete: weak memory effects are 
 error: Undefined Behavior: Data race detected between Deallocate on Thread(id = 2) and Read on Thread(id = 1) at alloc969 (current vector clock = VClock([15, 0, 6]), conflicting timestamp = VClock([0, 6]))
   --> $DIR/dealloc_read_race1.rs:26:13
    |
-26 |             __rust_dealloc(ptr.0 as *mut _, std::mem::size_of::<usize>(), std::mem::align_of::<usize>());  //~ ERROR Data race detected b...
+LL |             __rust_dealloc(ptr.0 as *mut _, std::mem::size_of::<usize>(), std::mem::align_of::<usize>());  //~ ERROR Data race detected b...
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Data race detected between Deallocate on Thread(id = 2) and Read on Thread(id = 1) at alloc969 (current vector clock = VClock([15, 0, 6]), conflicting timestamp = VClock([0, 6]))
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

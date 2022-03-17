@@ -1,7 +1,7 @@
 error: Undefined Behavior: `float_to_int_unchecked` intrinsic called on 3.40282347E+38 which cannot be represented in target type `i32`
   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/../../portable-simd/crates/core_simd/src/round.rs:39:1
    |
-39 | implement! { f32 }
+LL | implement! { f32 }
    | ^^^^^^^^^^^^^^^^^^ `float_to_int_unchecked` intrinsic called on 3.40282347E+38 which cannot be represented in target type `i32`
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
@@ -11,7 +11,7 @@ error: Undefined Behavior: `float_to_int_unchecked` intrinsic called on 3.402823
 note: inside `main` at $DIR/simd-float-to-int.rs:6:22
   --> $DIR/simd-float-to-int.rs:6:22
    |
-6  |     let _x : i32x2 = f32x2::from_array([f32::MAX, f32::MIN]).to_int_unchecked();
+LL |     let _x : i32x2 = f32x2::from_array([f32::MAX, f32::MIN]).to_int_unchecked();
    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: this error originates in the macro `implement` (in Nightly builds, run with -Z macro-backtrace for more info)
 

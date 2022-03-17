@@ -1,10 +1,10 @@
 error: abnormal termination: Trace/breakpoint trap
- --> $DIR/breakpoint.rs:5:9
-  |
-5 |         core::intrinsics::breakpoint() //~ ERROR Trace/breakpoint trap
-  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Trace/breakpoint trap
-  |
-  = note: inside `main` at $DIR/breakpoint.rs:5:9
+  --> $DIR/breakpoint.rs:5:9
+   |
+LL |         core::intrinsics::breakpoint() //~ ERROR Trace/breakpoint trap
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Trace/breakpoint trap
+   |
+   = note: inside `main` at $DIR/breakpoint.rs:5:9
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

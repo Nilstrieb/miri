@@ -1,7 +1,7 @@
 error: Undefined Behavior: pointer to alloc512 was dereferenced after this allocation got freed
   --> $DIR/dangling_zst_deref.rs:10:23
    |
-10 |     let _x = unsafe { *p }; //~ ERROR dereferenced after this allocation got freed
+LL |     let _x = unsafe { *p }; //~ ERROR dereferenced after this allocation got freed
    |                       ^^ pointer to alloc512 was dereferenced after this allocation got freed
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

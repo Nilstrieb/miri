@@ -1,17 +1,17 @@
 thread 'main' panicked at 'explicit panic', $DIR/abort-terminator.rs:4:31
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: abnormal termination: the program aborted execution
- --> $DIR/abort-terminator.rs:4:1
-  |
-4 | extern "C" fn panic_abort() { panic!() }
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the program aborted execution
-  |
-  = note: inside `panic_abort` at $DIR/abort-terminator.rs:4:1
+  --> $DIR/abort-terminator.rs:4:1
+   |
+LL | extern "C" fn panic_abort() { panic!() }
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the program aborted execution
+   |
+   = note: inside `panic_abort` at $DIR/abort-terminator.rs:4:1
 note: inside `main` at $DIR/abort-terminator.rs:7:5
- --> $DIR/abort-terminator.rs:7:5
-  |
-7 |     panic_abort();
-  |     ^^^^^^^^^^^^^
+  --> $DIR/abort-terminator.rs:7:5
+   |
+LL |     panic_abort();
+   |     ^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

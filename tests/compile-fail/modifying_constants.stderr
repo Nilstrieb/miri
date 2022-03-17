@@ -1,13 +1,13 @@
 error: Undefined Behavior: writing to alloc509 which is read-only
- --> $DIR/modifying_constants.rs:7:5
-  |
-7 |     *y = 42;  //~ ERROR read-only
-  |     ^^^^^^^ writing to alloc509 which is read-only
-  |
-  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-          
-  = note: inside `main` at $DIR/modifying_constants.rs:7:5
+  --> $DIR/modifying_constants.rs:7:5
+   |
+LL |     *y = 42;  //~ ERROR read-only
+   |     ^^^^^^^ writing to alloc509 which is read-only
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/modifying_constants.rs:7:5
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

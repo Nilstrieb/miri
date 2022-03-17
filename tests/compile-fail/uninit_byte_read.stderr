@@ -1,13 +1,13 @@
 error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory
- --> $DIR/uninit_byte_read.rs:4:13
-  |
-4 |     let x = undef + 1; //~ ERROR this operation requires initialized memory
-  |             ^^^^^^^^^ using uninitialized data, but this operation requires initialized memory
-  |
-  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-          
-  = note: inside `main` at $DIR/uninit_byte_read.rs:4:13
+  --> $DIR/uninit_byte_read.rs:4:13
+   |
+LL |     let x = undef + 1; //~ ERROR this operation requires initialized memory
+   |             ^^^^^^^^^ using uninitialized data, but this operation requires initialized memory
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/uninit_byte_read.rs:4:13
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

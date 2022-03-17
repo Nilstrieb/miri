@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a write access using <2098> at alloc967[0x4], but that tag does not exist in the borrow stack for this location
   --> $DIR/buggy_as_mut_slice.rs:15:5
    |
-15 |     v1[1] = 5;
+LL |     v1[1] = 5;
    |     ^^^^^^^^^
    |     |
    |     attempting a write access using <2098> at alloc967[0x4], but that tag does not exist in the borrow stack for this location

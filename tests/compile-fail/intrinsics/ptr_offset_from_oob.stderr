@@ -1,7 +1,7 @@
 error: Undefined Behavior: out-of-bounds offset_from: alloc954 has size 4, so pointer at offset 10 is out-of-bounds
   --> $DIR/ptr_offset_from_oob.rs:10:14
    |
-10 |     unsafe { ptr_offset_from(end_ptr, end_ptr) }; //~ERROR pointer at offset 10 is out-of-bounds
+LL |     unsafe { ptr_offset_from(end_ptr, end_ptr) }; //~ERROR pointer at offset 10 is out-of-bounds
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ out-of-bounds offset_from: alloc954 has size 4, so pointer at offset 10 is out-of-bounds
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

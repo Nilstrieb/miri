@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <1906> for SharedReadOnly permission at alloc953[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/load_invalid_shr.rs:11:16
    |
-11 |     let _val = *xref_in_mem; //~ ERROR borrow stack
+LL |     let _val = *xref_in_mem; //~ ERROR borrow stack
    |                ^^^^^^^^^^^^
    |                |
    |                trying to reborrow <1906> for SharedReadOnly permission at alloc953[0x0], but that tag does not exist in the borrow stack for this location

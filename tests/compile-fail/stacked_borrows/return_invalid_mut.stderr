@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <1907> for Unique permission at alloc953[0x4], but that tag does not exist in the borrow stack for this location
   --> $DIR/return_invalid_mut.rs:6:5
    |
-6  |     ret //~ ERROR borrow stack
+LL |     ret //~ ERROR borrow stack
    |     ^^^
    |     |
    |     trying to reborrow <1907> for Unique permission at alloc953[0x4], but that tag does not exist in the borrow stack for this location
@@ -14,7 +14,7 @@ error: Undefined Behavior: trying to reborrow <1907> for Unique permission at al
 note: inside `main` at $DIR/return_invalid_mut.rs:10:5
   --> $DIR/return_invalid_mut.rs:10:5
    |
-10 |     foo(&mut (1, 2));
+LL |     foo(&mut (1, 2));
    |     ^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

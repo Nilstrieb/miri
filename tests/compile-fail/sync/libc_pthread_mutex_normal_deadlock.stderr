@@ -1,7 +1,7 @@
 error: deadlock: the evaluated program deadlocked
   --> $DIR/libc_pthread_mutex_normal_deadlock.rs:14:9
    |
-14 |         libc::pthread_mutex_lock(&mut mutex as *mut _); //~ ERROR deadlock: the evaluated program deadlocked
+LL |         libc::pthread_mutex_lock(&mut mutex as *mut _); //~ ERROR deadlock: the evaluated program deadlocked
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the evaluated program deadlocked
    |
    = note: inside `main` at $DIR/libc_pthread_mutex_normal_deadlock.rs:14:9

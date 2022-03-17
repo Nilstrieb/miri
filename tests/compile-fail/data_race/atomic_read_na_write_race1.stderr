@@ -3,7 +3,7 @@ warning: thread support is experimental and incomplete: weak memory effects are 
 error: Undefined Behavior: Data race detected between Atomic Load on Thread(id = 2) and Write on Thread(id = 1) at alloc954 (current vector clock = VClock([15, 0, 6]), conflicting timestamp = VClock([0, 6]))
   --> $DIR/atomic_read_na_write_race1.rs:25:13
    |
-25 |             atomic_load(c.0 as *mut usize) //~ ERROR Data race detected between Atomic Load on Thread(id = 2) and Write on Thread(id = 1)
+LL |             atomic_load(c.0 as *mut usize) //~ ERROR Data race detected between Atomic Load on Thread(id = 2) and Write on Thread(id = 1)
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Data race detected between Atomic Load on Thread(id = 2) and Write on Thread(id = 1) at alloc954 (current vector clock = VClock([15, 0, 6]), conflicting timestamp = VClock([0, 6]))
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

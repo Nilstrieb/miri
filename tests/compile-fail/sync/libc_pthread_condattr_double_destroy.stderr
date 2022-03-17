@@ -1,7 +1,7 @@
 error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory
   --> $DIR/libc_pthread_condattr_double_destroy.rs:16:9
    |
-16 |         libc::pthread_condattr_destroy(attr.as_mut_ptr());
+LL |         libc::pthread_condattr_destroy(attr.as_mut_ptr());
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ using uninitialized data, but this operation requires initialized memory
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

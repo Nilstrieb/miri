@@ -66,28 +66,28 @@ stack backtrace:
                                at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/rt.rs:144:17
 thread panicked while panicking. aborting.
 error: abnormal termination: the program aborted execution
-   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/mod.rs:259:14
-    |
-259 |     unsafe { libc::abort() }
-    |              ^^^^^^^^^^^^^ the program aborted execution
-    |
-    = note: inside `std::sys::unix::abort_internal` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/mod.rs:259:14
-    = note: inside `std::panicking::rust_panic_with_hook` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:713:9
-    = note: inside closure at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:617:9
-    = note: inside `std::sys_common::backtrace::__rust_end_short_backtrace::<[closure@std::rt::begin_panic<&str>::{closure#0}], !>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:138:18
-    = note: inside `std::rt::begin_panic::<&str>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:616:12
+  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/mod.rs:259:14
+   |
+LL |     unsafe { libc::abort() }
+   |              ^^^^^^^^^^^^^ the program aborted execution
+   |
+   = note: inside `std::sys::unix::abort_internal` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/mod.rs:259:14
+   = note: inside `std::panicking::rust_panic_with_hook` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:713:9
+   = note: inside closure at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:617:9
+   = note: inside `std::sys_common::backtrace::__rust_end_short_backtrace::<[closure@std::rt::begin_panic<&str>::{closure#0}], !>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:138:18
+   = note: inside `std::rt::begin_panic::<&str>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:616:12
 note: inside `<Foo as std::ops::Drop>::drop` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panic.rs:22:9
-   --> $DIR/double_panic.rs:6:9
-    |
-6   |         panic!("second");
-    |         ^^^^^^^^^^^^^^^^
-    = note: inside `std::ptr::drop_in_place::<Foo> - shim(Some(Foo))` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:188:1
+  --> $DIR/double_panic.rs:6:9
+   |
+LL |         panic!("second");
+   |         ^^^^^^^^^^^^^^^^
+   = note: inside `std::ptr::drop_in_place::<Foo> - shim(Some(Foo))` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:188:1
 note: inside `main` at $DIR/double_panic.rs:12:1
-   --> $DIR/double_panic.rs:12:1
-    |
-12  | }
-    | ^
-    = note: this error originates in the macro `$crate::panic::panic_2015` (in Nightly builds, run with -Z macro-backtrace for more info)
+  --> $DIR/double_panic.rs:12:1
+   |
+LL | }
+   | ^
+   = note: this error originates in the macro `$crate::panic::panic_2015` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

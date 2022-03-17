@@ -3,7 +3,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: abnormal termination: the program aborted execution
   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/panic_abort/src/lib.rs:43:17
    |
-43 |                 libc::abort();
+LL |                 libc::abort();
    |                 ^^^^^^^^^^^^^ the program aborted execution
    |
    = note: inside `panic_abort::__rust_start_panic::abort` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/panic_abort/src/lib.rs:43:17
@@ -17,7 +17,7 @@ error: abnormal termination: the program aborted execution
 note: inside `main` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/panic.rs:39:9
   --> $DIR/panic_abort4.rs:5:5
    |
-5  |     core::panic!("{}-panicking from libcore", 42);
+LL |     core::panic!("{}-panicking from libcore", 42);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: this error originates in the macro `$crate::panic::panic_2015` (in Nightly builds, run with -Z macro-backtrace for more info)
 

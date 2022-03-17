@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a read access using <1990> at alloc970[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/box_exclusive_violation1.rs:11:3
    |
-11 |   *our //~ ERROR borrow stack
+LL |   *our //~ ERROR borrow stack
    |   ^^^^
    |   |
    |   attempting a read access using <1990> at alloc970[0x0], but that tag does not exist in the borrow stack for this location
@@ -14,7 +14,7 @@ error: Undefined Behavior: attempting a read access using <1990> at alloc970[0x0
 note: inside `main` at $DIR/box_exclusive_violation1.rs:28:5
   --> $DIR/box_exclusive_violation1.rs:28:5
    |
-28 |     demo_mut_advanced_unique(Box::new(0));
+LL |     demo_mut_advanced_unique(Box::new(0));
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

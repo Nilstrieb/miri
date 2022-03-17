@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a write access using <untagged> at alloc957[0x0], but that tag only grants SharedReadOnly permission for this location
   --> $DIR/shr_frozen_violation1.rs:12:14
    |
-12 |     unsafe { *(x as *const i32 as *mut i32) = 7; } //~ ERROR only grants SharedReadOnly permission
+LL |     unsafe { *(x as *const i32 as *mut i32) = 7; } //~ ERROR only grants SharedReadOnly permission
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |              |
    |              attempting a write access using <untagged> at alloc957[0x0], but that tag only grants SharedReadOnly permission for this location
@@ -14,12 +14,12 @@ error: Undefined Behavior: attempting a write access using <untagged> at alloc95
 note: inside `foo` at $DIR/shr_frozen_violation1.rs:3:3
   --> $DIR/shr_frozen_violation1.rs:3:3
    |
-3  |   unknown_code(&*x);
+LL |   unknown_code(&*x);
    |   ^^^^^^^^^^^^^^^^^
 note: inside `main` at $DIR/shr_frozen_violation1.rs:8:20
   --> $DIR/shr_frozen_violation1.rs:8:20
    |
-8  |     println!("{}", foo(&mut 0));
+LL |     println!("{}", foo(&mut 0));
    |                    ^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

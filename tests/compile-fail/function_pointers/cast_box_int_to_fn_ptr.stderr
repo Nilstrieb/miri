@@ -1,7 +1,7 @@
 error: Undefined Behavior: using alloc968 as function pointer but it does not point to a function
   --> $DIR/cast_box_int_to_fn_ptr.rs:10:5
    |
-10 |     (*g)(42) //~ ERROR it does not point to a function
+LL |     (*g)(42) //~ ERROR it does not point to a function
    |     ^^^^^^^^ using alloc968 as function pointer but it does not point to a function
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

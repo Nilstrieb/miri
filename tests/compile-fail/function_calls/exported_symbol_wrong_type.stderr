@@ -1,13 +1,13 @@
 error: Undefined Behavior: attempt to call an exported symbol that is not defined as a function
- --> $DIR/exported_symbol_wrong_type.rs:8:14
-  |
-8 |     unsafe { FOO() } //~ ERROR attempt to call an exported symbol that is not defined as a function
-  |              ^^^^^ attempt to call an exported symbol that is not defined as a function
-  |
-  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-          
-  = note: inside `main` at $DIR/exported_symbol_wrong_type.rs:8:14
+  --> $DIR/exported_symbol_wrong_type.rs:8:14
+   |
+LL |     unsafe { FOO() } //~ ERROR attempt to call an exported symbol that is not defined as a function
+   |              ^^^^^ attempt to call an exported symbol that is not defined as a function
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/exported_symbol_wrong_type.rs:8:14
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

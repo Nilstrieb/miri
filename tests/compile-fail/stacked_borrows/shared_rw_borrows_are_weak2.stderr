@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a read access using <1994> at alloc953[0x8], but that tag does not exist in the borrow stack for this location
   --> $DIR/shared_rw_borrows_are_weak2.rs:13:16
    |
-13 |     let _val = *y; //~ ERROR borrow stack
+LL |     let _val = *y; //~ ERROR borrow stack
    |                ^^
    |                |
    |                attempting a read access using <1994> at alloc953[0x8], but that tag does not exist in the borrow stack for this location

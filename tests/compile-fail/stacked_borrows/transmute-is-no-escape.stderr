@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a write access using <untagged> at alloc955[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/transmute-is-no-escape.rs:13:14
    |
-13 |     unsafe { *raw = 13; } //~ ERROR borrow stack
+LL |     unsafe { *raw = 13; } //~ ERROR borrow stack
    |              ^^^^^^^^^
    |              |
    |              attempting a write access using <untagged> at alloc955[0x0], but that tag does not exist in the borrow stack for this location

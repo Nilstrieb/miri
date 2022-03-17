@@ -1,13 +1,13 @@
 error: Undefined Behavior: type validation failed: encountered uninitialized bytes, but expected a valid unicode scalar value (in `0..=0x10FFFF` but not in `0xD800..=0xDFFF`)
- --> $DIR/invalid_char_uninit.rs:9:23
-  |
-9 |     let _b = unsafe { MyUninit { init: () }.uninit }; //~ ERROR encountered uninitialized bytes, but expected a valid unicode scalar valu...
-  |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered uninitialized bytes, but expected a valid unicode scalar value (in `0..=0x10FFFF` but not in `0xD800..=0xDFFF`)
-  |
-  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-          
-  = note: inside `main` at $DIR/invalid_char_uninit.rs:9:23
+  --> $DIR/invalid_char_uninit.rs:9:23
+   |
+LL |     let _b = unsafe { MyUninit { init: () }.uninit }; //~ ERROR encountered uninitialized bytes, but expected a valid unicode scalar valu...
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered uninitialized bytes, but expected a valid unicode scalar value (in `0..=0x10FFFF` but not in `0xD800..=0xDFFF`)
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/invalid_char_uninit.rs:9:23
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

@@ -1,7 +1,7 @@
 error: unsupported operation: cannot write to stdin
   --> $DIR/write_to_stdin.rs:10:9
    |
-10 |         libc::write(0, bytes.as_ptr() as *const libc::c_void, 5); //~ ERROR cannot write to stdin
+LL |         libc::write(0, bytes.as_ptr() as *const libc::c_void, 5); //~ ERROR cannot write to stdin
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot write to stdin
    |
    = help: this is likely not a bug in the program; it indicates that the program performed an operation that the interpreter does not support

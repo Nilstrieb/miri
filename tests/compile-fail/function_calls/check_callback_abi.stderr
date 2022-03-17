@@ -1,11 +1,11 @@
 error: Undefined Behavior: calling a function with ABI C using caller ABI Rust
   --> $DIR/check_callback_abi.rs:11:9
    |
-11 | /         std::intrinsics::r#try( //~ ERROR calling a function with ABI C using caller ABI Rust
-12 | |             std::mem::transmute::<extern "C" fn(*mut u8), _>(try_fn),
-13 | |             std::ptr::null_mut(),
-14 | |             |_, _| unreachable!(),
-15 | |         );
+LL | /         std::intrinsics::r#try( //~ ERROR calling a function with ABI C using caller ABI Rust
+LL | |             std::mem::transmute::<extern "C" fn(*mut u8), _>(try_fn),
+LL | |             std::ptr::null_mut(),
+LL | |             |_, _| unreachable!(),
+LL | |         );
    | |_________^ calling a function with ABI C using caller ABI Rust
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

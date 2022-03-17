@@ -1,7 +1,7 @@
 error: Undefined Behavior: accessing memory with alignment 4, but alignment 8 is required
   --> $DIR/atomic_unaligned.rs:10:9
    |
-10 |         ::std::intrinsics::atomic_load(zptr);
+LL |         ::std::intrinsics::atomic_load(zptr);
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ accessing memory with alignment 4, but alignment 8 is required
    |
    = help: this usually indicates that your program performed an invalid operation and caused Undefined Behavior

@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a read access using <1902> at alloc953[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/illegal_write4.rs:12:16
    |
-12 |     let _val = *reference; //~ ERROR borrow stack
+LL |     let _val = *reference; //~ ERROR borrow stack
    |                ^^^^^^^^^^
    |                |
    |                attempting a read access using <1902> at alloc953[0x0], but that tag does not exist in the borrow stack for this location

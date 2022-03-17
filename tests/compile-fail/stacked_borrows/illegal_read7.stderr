@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <1907> for SharedReadWrite permission at alloc953[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/illegal_read7.rs:19:17
    |
-19 |     let _val = *x.get_mut(); //~ ERROR borrow stack
+LL |     let _val = *x.get_mut(); //~ ERROR borrow stack
    |                 ^^^^^^^^^^^
    |                 |
    |                 trying to reborrow <1907> for SharedReadWrite permission at alloc953[0x0], but that tag does not exist in the borrow stack for this location

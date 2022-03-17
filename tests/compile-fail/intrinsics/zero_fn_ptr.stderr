@@ -1,10 +1,10 @@
 error: abnormal termination: aborted execution: attempted to zero-initialize type `fn()`, which is invalid
- --> $DIR/zero_fn_ptr.rs:5:14
-  |
-5 |     unsafe { std::mem::zeroed::<fn()>() };
-  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^ aborted execution: attempted to zero-initialize type `fn()`, which is invalid
-  |
-  = note: inside `main` at $DIR/zero_fn_ptr.rs:5:14
+  --> $DIR/zero_fn_ptr.rs:5:14
+   |
+LL |     unsafe { std::mem::zeroed::<fn()>() };
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^ aborted execution: attempted to zero-initialize type `fn()`, which is invalid
+   |
+   = note: inside `main` at $DIR/zero_fn_ptr.rs:5:14
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

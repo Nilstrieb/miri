@@ -26,6 +26,7 @@ fn run_tests(mode: &str, path: &str, target: &str) {
     if let Ok(extra_flags) = env::var("MIRIFLAGS") {
         flags.push(extra_flags);
     }
+    flags.push("-Zui-testing".to_string());
 
     let flags = flags.join(" ");
     eprintln!("   Compiler flags: {}", flags);

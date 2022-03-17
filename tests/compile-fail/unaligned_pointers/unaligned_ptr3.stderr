@@ -1,7 +1,7 @@
 error: Undefined Behavior: accessing memory with alignment 4, but alignment 8 is required
   --> $DIR/unaligned_ptr3.rs:10:27
    |
-10 |         let _x = unsafe { *x }; //~ERROR but alignment
+LL |         let _x = unsafe { *x }; //~ERROR but alignment
    |                           ^^ accessing memory with alignment 4, but alignment 8 is required
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

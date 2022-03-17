@@ -1,13 +1,13 @@
 error: Undefined Behavior: writing to alloc1 which is read-only
- --> $DIR/static_memory_modification.rs:6:9
-  |
-6 |         std::mem::transmute::<&usize, &mut usize>(&X) //~ ERROR writing to alloc1 which is read-only
-  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ writing to alloc1 which is read-only
-  |
-  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-          
-  = note: inside `main` at $DIR/static_memory_modification.rs:6:9
+  --> $DIR/static_memory_modification.rs:6:9
+   |
+LL |         std::mem::transmute::<&usize, &mut usize>(&X) //~ ERROR writing to alloc1 which is read-only
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ writing to alloc1 which is read-only
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `main` at $DIR/static_memory_modification.rs:6:9
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

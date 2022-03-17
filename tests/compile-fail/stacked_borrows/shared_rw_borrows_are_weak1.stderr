@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <1908> for SharedReadWrite permission at alloc953[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/shared_rw_borrows_are_weak1.rs:13:5
    |
-13 |     y.get_mut(); //~ ERROR borrow stack
+LL |     y.get_mut(); //~ ERROR borrow stack
    |     ^^^^^^^^^^^
    |     |
    |     trying to reborrow <1908> for SharedReadWrite permission at alloc953[0x0], but that tag does not exist in the borrow stack for this location

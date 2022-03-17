@@ -1,18 +1,18 @@
 error: Undefined Behavior: incorrect layout on deallocation: alloc962 has size 1 and alignment 1, but gave size 1 and alignment 2
-   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:105:14
-    |
-105 |     unsafe { __rust_dealloc(ptr, layout.size(), layout.align()) }
-    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ incorrect layout on deallocation: alloc962 has size 1 and alignment 1, but gave size 1 and alignment 2
-    |
-    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-            
-    = note: inside `std::alloc::dealloc` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:105:14
+  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:105:14
+   |
+LL |     unsafe { __rust_dealloc(ptr, layout.size(), layout.align()) }
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ incorrect layout on deallocation: alloc962 has size 1 and alignment 1, but gave size 1 and alignment 2
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `std::alloc::dealloc` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/alloc.rs:105:14
 note: inside `main` at $DIR/deallocate-bad-alignment.rs:8:9
-   --> $DIR/deallocate-bad-alignment.rs:8:9
-    |
-8   |         dealloc(x, Layout::from_size_align_unchecked(1, 2));
-    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  --> $DIR/deallocate-bad-alignment.rs:8:9
+   |
+LL |         dealloc(x, Layout::from_size_align_unchecked(1, 2));
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

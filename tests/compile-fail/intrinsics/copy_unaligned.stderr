@@ -1,7 +1,7 @@
 error: Undefined Behavior: accessing memory with alignment 1, but alignment 2 is required
   --> $DIR/copy_unaligned.rs:12:14
    |
-12 |     unsafe { copy_nonoverlapping(&data[5], ptr, 0); } //~ ERROR accessing memory with alignment 1, but alignment 2 is required
+LL |     unsafe { copy_nonoverlapping(&data[5], ptr, 0); } //~ ERROR accessing memory with alignment 1, but alignment 2 is required
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ accessing memory with alignment 1, but alignment 2 is required
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

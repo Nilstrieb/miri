@@ -1,7 +1,7 @@
 error: Undefined Behavior: memory access failed: null pointer is not a valid pointer
   --> $DIR/copy_null.rs:12:14
    |
-12 |     unsafe { copy_nonoverlapping(std::ptr::null(), ptr, 0); } //~ ERROR: memory access failed: null pointer is not a valid pointer
+LL |     unsafe { copy_nonoverlapping(std::ptr::null(), ptr, 0); } //~ ERROR: memory access failed: null pointer is not a valid pointer
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ memory access failed: null pointer is not a valid pointer
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

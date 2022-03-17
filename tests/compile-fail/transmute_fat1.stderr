@@ -1,7 +1,7 @@
 error: unsupported operation: unable to turn pointer into raw bytes
   --> $DIR/transmute_fat1.rs:13:16
    |
-13 |     let _val = bad[0] + bad[bad.len()-1]; //~ ERROR unable to turn pointer into raw bytes
+LL |     let _val = bad[0] + bad[bad.len()-1]; //~ ERROR unable to turn pointer into raw bytes
    |                ^^^^^^ unable to turn pointer into raw bytes
    |
    = help: this is likely not a bug in the program; it indicates that the program performed an operation that the interpreter does not support

@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <untagged> for SharedReadOnly permission at alloc954[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/aliasing_mut3.rs:3:1
    |
-3  | pub fn safe(_x: &mut i32, _y: &i32) {} //~ ERROR borrow stack
+LL | pub fn safe(_x: &mut i32, _y: &i32) {} //~ ERROR borrow stack
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    | |
    | trying to reborrow <untagged> for SharedReadOnly permission at alloc954[0x0], but that tag does not exist in the borrow stack for this location
@@ -14,7 +14,7 @@ error: Undefined Behavior: trying to reborrow <untagged> for SharedReadOnly perm
 note: inside `main` at $DIR/aliasing_mut3.rs:14:5
   --> $DIR/aliasing_mut3.rs:14:5
    |
-14 |     safe_raw(xraw, xshr);
+LL |     safe_raw(xraw, xshr);
    |     ^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

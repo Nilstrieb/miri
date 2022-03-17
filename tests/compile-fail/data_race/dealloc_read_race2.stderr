@@ -3,7 +3,7 @@ warning: thread support is experimental and incomplete: weak memory effects are 
 error: Undefined Behavior: pointer to alloc969 was dereferenced after this allocation got freed
   --> $DIR/dealloc_read_race2.rs:28:13
    |
-28 |             *ptr.0 //~ ERROR dereferenced after this allocation got freed
+LL |             *ptr.0 //~ ERROR dereferenced after this allocation got freed
    |             ^^^^^^ pointer to alloc969 was dereferenced after this allocation got freed
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

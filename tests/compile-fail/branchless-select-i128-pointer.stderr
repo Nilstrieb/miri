@@ -1,7 +1,7 @@
 error: Undefined Behavior: type validation failed: encountered (potentially part of) a pointer, but expected plain (non-pointer) bytes
   --> $DIR/branchless-select-i128-pointer.rs:15:25
    |
-15 |                 !mask & transmute::<_, TwoPtrs>("false !") | mask & transmute::<_, TwoPtrs>("true !"), //~ERROR encountered (potentially ...
+LL |                 !mask & transmute::<_, TwoPtrs>("false !") | mask & transmute::<_, TwoPtrs>("true !"), //~ERROR encountered (potentially ...
    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered (potentially part of) a pointer, but expected plain (non-pointer) bytes
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

@@ -1,7 +1,7 @@
 error: Undefined Behavior: overflowing shift by 100 in `simd_shl` in SIMD lane 0
   --> $DIR/simd-shl-too-far.rs:14:5
    |
-14 |     simd_shl(x, y); //~ERROR overflowing shift by 100 in `simd_shl` in SIMD lane 0
+LL |     simd_shl(x, y); //~ERROR overflowing shift by 100 in `simd_shl` in SIMD lane 0
    |     ^^^^^^^^^^^^^^ overflowing shift by 100 in `simd_shl` in SIMD lane 0
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

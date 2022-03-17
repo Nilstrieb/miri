@@ -1,7 +1,7 @@
 error: unsupported operation: can't call foreign function: signal
   --> $DIR/unsupported_signal.rs:10:9
    |
-10 |         libc::signal(libc::SIGPIPE, libc::SIG_IGN);
+LL |         libc::signal(libc::SIGPIPE, libc::SIG_IGN);
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't call foreign function: signal
    |
    = help: this is likely not a bug in the program; it indicates that the program performed an operation that the interpreter does not support

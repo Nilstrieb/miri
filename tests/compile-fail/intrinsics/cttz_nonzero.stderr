@@ -1,7 +1,7 @@
 error: Undefined Behavior: `cttz_nonzero` called on 0
   --> $DIR/cttz_nonzero.rs:13:9
    |
-13 |         cttz_nonzero(0u8); //~ ERROR `cttz_nonzero` called on 0
+LL |         cttz_nonzero(0u8); //~ ERROR `cttz_nonzero` called on 0
    |         ^^^^^^^^^^^^^^^^^ `cttz_nonzero` called on 0
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

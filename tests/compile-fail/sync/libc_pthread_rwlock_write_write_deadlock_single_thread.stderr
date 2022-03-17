@@ -1,7 +1,7 @@
 error: deadlock: the evaluated program deadlocked
   --> $DIR/libc_pthread_rwlock_write_write_deadlock_single_thread.rs:12:45
    |
-12 |         libc::pthread_rwlock_wrlock(rw.get());
+LL |         libc::pthread_rwlock_wrlock(rw.get());
    |                                             ^ the evaluated program deadlocked
    |
    = note: inside `main` at $DIR/libc_pthread_rwlock_write_write_deadlock_single_thread.rs:12:45

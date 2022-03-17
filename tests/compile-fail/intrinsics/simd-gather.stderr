@@ -1,18 +1,18 @@
 error: Undefined Behavior: dereferencing pointer failed: alloc954 has size 9, so pointer to 1 byte starting at offset 9 is out-of-bounds
-   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/../../portable-simd/crates/core_simd/src/vector.rs:284:18
-    |
-284 |         unsafe { intrinsics::simd_gather(or, ptrs, enable.to_int()) }
-    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereferencing pointer failed: alloc954 has size 9, so pointer to 1 byte starting at offset 9 is out-of-bounds
-    |
-    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-            
-    = note: inside `std::simd::Simd::<i8, 4_usize>::gather_select_unchecked` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/../../portable-simd/crates/core_simd/src/vector.rs:284:18
+  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/../../portable-simd/crates/core_simd/src/vector.rs:284:18
+   |
+LL |         unsafe { intrinsics::simd_gather(or, ptrs, enable.to_int()) }
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereferencing pointer failed: alloc954 has size 9, so pointer to 1 byte starting at offset 9 is out-of-bounds
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `std::simd::Simd::<i8, 4_usize>::gather_select_unchecked` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/../../portable-simd/crates/core_simd/src/vector.rs:284:18
 note: inside `main` at $DIR/simd-gather.rs:8:19
-   --> $DIR/simd-gather.rs:8:19
-    |
-8   |     let _result = Simd::gather_select_unchecked(&vec, Mask::splat(true), idxs, Simd::splat(0));
-    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  --> $DIR/simd-gather.rs:8:19
+   |
+LL |     let _result = Simd::gather_select_unchecked(&vec, Mask::splat(true), idxs, Simd::splat(0));
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

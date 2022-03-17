@@ -3,7 +3,7 @@ warning: thread support is experimental and incomplete: weak memory effects are 
 error: Undefined Behavior: unlocked a default mutex that was not locked by the current thread
   --> $DIR/libc_pthread_mutex_wrong_owner.rs:27:24
    |
-27 | ...t_eq!(libc::pthread_mutex_unlock(lock_copy.0.get() as *mut _), 0); //~ ERROR: Undefined Behavior: unlocked a default mutex that was no...
+LL | ...t_eq!(libc::pthread_mutex_unlock(lock_copy.0.get() as *mut _), 0); //~ ERROR: Undefined Behavior: unlocked a default mutex that was no...
    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unlocked a default mutex that was not locked by the current thread
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

@@ -1,7 +1,7 @@
 error: Undefined Behavior: pointer to alloc981 was dereferenced after this allocation got freed
   --> $DIR/rc_as_ptr.rs:19:5
    |
-19 |     assert_eq!(42, **unsafe { &*Weak::as_ptr(&weak) }); //~ ERROR dereferenced after this allocation got freed
+LL |     assert_eq!(42, **unsafe { &*Weak::as_ptr(&weak) }); //~ ERROR dereferenced after this allocation got freed
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ pointer to alloc981 was dereferenced after this allocation got freed
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a read access using <untagged> at alloc955[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/pointer_smuggling.rs:11:23
    |
-11 |     let _x = unsafe { *PTR }; //~ ERROR borrow stack
+LL |     let _x = unsafe { *PTR }; //~ ERROR borrow stack
    |                       ^^^^
    |                       |
    |                       attempting a read access using <untagged> at alloc955[0x0], but that tag does not exist in the borrow stack for this location
@@ -14,7 +14,7 @@ error: Undefined Behavior: attempting a read access using <untagged> at alloc955
 note: inside `main` at $DIR/pointer_smuggling.rs:19:5
   --> $DIR/pointer_smuggling.rs:19:5
    |
-19 |     fun2(); // if they now use a raw ptr they break our reference
+LL |     fun2(); // if they now use a raw ptr they break our reference
    |     ^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

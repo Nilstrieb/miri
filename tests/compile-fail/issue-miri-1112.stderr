@@ -1,7 +1,7 @@
 error: Undefined Behavior: type validation failed: encountered invalid drop function pointer in vtable (function has incompatible signature)
   --> $DIR/issue-miri-1112.rs:35:19
    |
-35 |         let obj = std::mem::transmute::<FatPointer, *mut FunnyPointer>(obj); //~ ERROR invalid drop function pointer in vtable
+LL |         let obj = std::mem::transmute::<FatPointer, *mut FunnyPointer>(obj); //~ ERROR invalid drop function pointer in vtable
    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered invalid drop function pointer in vtable (function has incompatible signature)
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
@@ -11,7 +11,7 @@ error: Undefined Behavior: type validation failed: encountered invalid drop func
 note: inside `main` at $DIR/issue-miri-1112.rs:44:35
   --> $DIR/issue-miri-1112.rs:44:35
    |
-44 |         let _raw: &FunnyPointer = FunnyPointer::from_data_ptr(&hello, &meta as *const _);
+LL |         let _raw: &FunnyPointer = FunnyPointer::from_data_ptr(&hello, &meta as *const _);
    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

@@ -1,7 +1,7 @@
 error: Undefined Behavior: deallocating alloc975, which is Rust heap memory, using C heap deallocation operation
   --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys/unix/alloc.rs:42:9
    |
-42 |         libc::free(ptr as *mut libc::c_void)
+LL |         libc::free(ptr as *mut libc::c_void)
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ deallocating alloc975, which is Rust heap memory, using C heap deallocation operation
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
@@ -12,7 +12,7 @@ error: Undefined Behavior: deallocating alloc975, which is Rust heap memory, usi
 note: inside `main` at $DIR/global_system_mixup.rs:12:14
   --> $DIR/global_system_mixup.rs:12:14
    |
-12 |     unsafe { System.deallocate(ptr, l); }
+LL |     unsafe { System.deallocate(ptr, l); }
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

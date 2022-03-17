@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a read access using <1912> at alloc955[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/alias_through_mutation.rs:12:16
    |
-12 |     let _val = *target_alias; //~ ERROR borrow stack
+LL |     let _val = *target_alias; //~ ERROR borrow stack
    |                ^^^^^^^^^^^^^
    |                |
    |                attempting a read access using <1912> at alloc955[0x0], but that tag does not exist in the borrow stack for this location

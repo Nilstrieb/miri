@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a write access using <untagged> at alloc955[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/mut_exclusive_violation1.rs:24:5
    |
-24 |     *LEAK = 7; //~ ERROR borrow stack
+LL |     *LEAK = 7; //~ ERROR borrow stack
    |     ^^^^^^^^^
    |     |
    |     attempting a write access using <untagged> at alloc955[0x0], but that tag does not exist in the borrow stack for this location
@@ -14,12 +14,12 @@ error: Undefined Behavior: attempting a write access using <untagged> at alloc95
 note: inside `demo_mut_advanced_unique` at $DIR/mut_exclusive_violation1.rs:8:3
   --> $DIR/mut_exclusive_violation1.rs:8:3
    |
-8  |   unknown_code_2();
+LL |   unknown_code_2();
    |   ^^^^^^^^^^^^^^^^
 note: inside `main` at $DIR/mut_exclusive_violation1.rs:28:5
   --> $DIR/mut_exclusive_violation1.rs:28:5
    |
-28 |     demo_mut_advanced_unique(&mut 0);
+LL |     demo_mut_advanced_unique(&mut 0);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace

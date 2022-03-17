@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <1931> for Unique permission at alloc953[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/buggy_split_at_mut.rs:19:10
    |
-19 |     let (a, b) = safe::split_at_mut(&mut array, 0);
+LL |     let (a, b) = safe::split_at_mut(&mut array, 0);
    |          ^
    |          |
    |          trying to reborrow <1931> for Unique permission at alloc953[0x0], but that tag does not exist in the borrow stack for this location

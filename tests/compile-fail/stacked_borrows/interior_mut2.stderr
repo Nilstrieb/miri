@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <1912> for SharedReadWrite permission at alloc955[0x0], but that tag does not exist in the borrow stack for this location
   --> $DIR/interior_mut2.rs:27:17
    |
-27 |     let _val = *inner_shr.get(); //~ ERROR borrow stack
+LL |     let _val = *inner_shr.get(); //~ ERROR borrow stack
    |                 ^^^^^^^^^^^^^^^
    |                 |
    |                 trying to reborrow <1912> for SharedReadWrite permission at alloc955[0x0], but that tag does not exist in the borrow stack for this location

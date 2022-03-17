@@ -1,7 +1,7 @@
 error: Undefined Behavior: pointer to alloc957 was dereferenced after this allocation got freed
   --> $DIR/stack_temporary.rs:11:19
    |
-11 |         let val = *x; //~ ERROR dereferenced after this allocation got freed
+LL |         let val = *x; //~ ERROR dereferenced after this allocation got freed
    |                   ^^ pointer to alloc957 was dereferenced after this allocation got freed
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

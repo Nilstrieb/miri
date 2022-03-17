@@ -1,7 +1,7 @@
 error: unsupported operation: can't call foreign function: __rust_alloc
   --> $DIR/no_global_allocator.rs:13:9
    |
-13 |         __rust_alloc(1, 1); //~ERROR: unsupported operation: can't call foreign function: __rust_alloc
+LL |         __rust_alloc(1, 1); //~ERROR: unsupported operation: can't call foreign function: __rust_alloc
    |         ^^^^^^^^^^^^^^^^^^ can't call foreign function: __rust_alloc
    |
    = help: this is likely not a bug in the program; it indicates that the program performed an operation that the interpreter does not support

@@ -1,12 +1,12 @@
 error: unsupported operation: `extern` static DefId(0:4 ~ extern_static[7b13]::{extern#0}::FOO) is not supported by Miri
- --> $DIR/extern_static.rs:8:44
-  |
-8 |     let _val = unsafe { std::ptr::addr_of!(FOO) }; //~ ERROR is not supported by Miri
-  |                                            ^^^ `extern` static DefId(0:4 ~ extern_static[7b13]::{extern#0}::FOO) is not supported by Miri
-  |
-  = help: this is likely not a bug in the program; it indicates that the program performed an operation that the interpreter does not support
-          
-  = note: inside `main` at $DIR/extern_static.rs:8:44
+  --> $DIR/extern_static.rs:8:44
+   |
+LL |     let _val = unsafe { std::ptr::addr_of!(FOO) }; //~ ERROR is not supported by Miri
+   |                                            ^^^ `extern` static DefId(0:4 ~ extern_static[7b13]::{extern#0}::FOO) is not supported by Miri
+   |
+   = help: this is likely not a bug in the program; it indicates that the program performed an operation that the interpreter does not support
+           
+   = note: inside `main` at $DIR/extern_static.rs:8:44
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

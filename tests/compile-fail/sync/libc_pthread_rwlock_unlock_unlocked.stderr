@@ -1,7 +1,7 @@
 error: Undefined Behavior: unlocked an rwlock that was not locked by the active thread
   --> $DIR/libc_pthread_rwlock_unlock_unlocked.rs:10:9
    |
-10 |         libc::pthread_rwlock_unlock(rw.get()); //~ ERROR was not locked
+LL |         libc::pthread_rwlock_unlock(rw.get()); //~ ERROR was not locked
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unlocked an rwlock that was not locked by the active thread
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

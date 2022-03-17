@@ -1,19 +1,19 @@
 error: Undefined Behavior: overflow computing total size of `copy`
-    --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/intrinsics.rs:2193:14
-     |
-2193 |     unsafe { copy(src, dst, count) }
-     |              ^^^^^^^^^^^^^^^^^^^^^ overflow computing total size of `copy`
-     |
-     = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-     = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
-             
-     = note: inside `std::intrinsics::copy::<i32>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/intrinsics.rs:2193:14
-     = note: inside `std::ptr::mut_ptr::<impl *mut i32>::copy_from` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mut_ptr.rs:1032:18
+  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/intrinsics.rs:2193:14
+   |
+LL |     unsafe { copy(src, dst, count) }
+   |              ^^^^^^^^^^^^^^^^^^^^^ overflow computing total size of `copy`
+   |
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+           
+   = note: inside `std::intrinsics::copy::<i32>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/intrinsics.rs:2193:14
+   = note: inside `std::ptr::mut_ptr::<impl *mut i32>::copy_from` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mut_ptr.rs:1032:18
 note: inside `main` at $DIR/copy_overflow.rs:8:9
-    --> $DIR/copy_overflow.rs:8:9
-     |
-8    |         (&mut y as *mut i32).copy_from(&x, 1usize << (mem::size_of::<usize>() * 8 - 1));
-     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  --> $DIR/copy_overflow.rs:8:9
+   |
+LL |         (&mut y as *mut i32).copy_from(&x, 1usize << (mem::size_of::<usize>() * 8 - 1));
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 
