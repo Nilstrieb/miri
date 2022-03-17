@@ -1,5 +1,6 @@
 // ignore-windows: Concurrency on Windows is not supported yet.
 // compile-flags: -Zmiri-disable-isolation
+// normalize-stderr-test: "alloc[0-9]+" -> "allocXXX"
 
 use std::thread::{spawn, sleep};
 use std::time::Duration;
