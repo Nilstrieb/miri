@@ -1,14 +1,10 @@
 error: Undefined Behavior: overflow computing total size of `write_bytes`
-  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/intrinsics.rs:2294:14
-   |
-LL |     unsafe { write_bytes(dst, val, count) }
-   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ overflow computing total size of `write_bytes`
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
            
-   = note: inside `std::intrinsics::write_bytes::<i32>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/intrinsics.rs:2294:14
-   = note: inside `std::ptr::mut_ptr::<impl *mut i32>::write_bytes` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/ptr/mut_ptr.rs:1097:18
+   = note: inside `std::intrinsics::write_bytes::<i32>` at rustc_src/src/intrinsics.rs:2294:14
+   = note: inside `std::ptr::mut_ptr::<impl *mut i32>::write_bytes` at rustc_src/src/ptr/mut_ptr.rs:1097:18
 note: inside `main` at $DIR/write_bytes_overflow.rs:7:9
   --> $DIR/write_bytes_overflow.rs:7:9
    |

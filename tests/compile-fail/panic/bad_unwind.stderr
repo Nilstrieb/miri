@@ -10,9 +10,9 @@ LL |     std::panic::catch_unwind(|| unwind()).unwrap_err();
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
            
    = note: inside closure at $DIR/bad_unwind.rs:13:33
-   = note: inside `std::panicking::r#try::do_call::<[closure@$DIR/bad_unwind.rs:13:30: 13:41], ()>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:492:40
-   = note: inside `std::panicking::r#try::<(), [closure@$DIR/bad_unwind.rs:13:30: 13:41]>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:456:19
-   = note: inside `std::panic::catch_unwind::<[closure@$DIR/bad_unwind.rs:13:30: 13:41], ()>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panic.rs:137:14
+   = note: inside `std::panicking::r#try::do_call::<[closure@$DIR/bad_unwind.rs:13:30: 13:41], ()>` at rustc_src/src/panicking.rs:492:40
+   = note: inside `std::panicking::r#try::<(), [closure@$DIR/bad_unwind.rs:13:30: 13:41]>` at rustc_src/src/panicking.rs:456:19
+   = note: inside `std::panic::catch_unwind::<[closure@$DIR/bad_unwind.rs:13:30: 13:41], ()>` at rustc_src/src/panic.rs:137:14
 note: inside `main` at $DIR/bad_unwind.rs:13:5
   --> $DIR/bad_unwind.rs:13:5
    |

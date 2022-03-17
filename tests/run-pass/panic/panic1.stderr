@@ -1,31 +1,31 @@
 thread 'main' panicked at 'panicking from libstd', $DIR/panic1.rs:8:5
 stack backtrace:
    0: std::rt::begin_panic
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/panicking.rs:616:12
    1: main
              at $DIR/panic1.rs:8:5
    2: <fn() as std::ops::FnOnce<()>>::call_once - shim(fn())
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/ops/function.rs:227:5
    3: std::rt::lang_start::{closure#0}
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/rt.rs:145:18
    4: std::ops::function::impls::call_once
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/ops/function.rs:259:13
    5: std::panicking::r#try::do_call
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/panicking.rs:492:40
    6: std::panicking::r#try
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/panicking.rs:456:19
    7: std::panic::catch_unwind
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/panic.rs:137:14
    8: std::rt::lang_start_internal::{closure#2}
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/rt.rs:128:48
    9: std::panicking::r#try::do_call
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/panicking.rs:492:40
   10: std::panicking::r#try
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/panicking.rs:456:19
   11: std::panic::catch_unwind
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/panic.rs:137:14
   12: std::rt::lang_start_internal
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/rt.rs:128:20
   13: std::rt::lang_start
-             at RUSTLIB/$FILE:LL:COL
+             at rustc_src/src/rt.rs:144:17
 note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.

@@ -1,14 +1,10 @@
 error: Undefined Behavior: 0x4 is not a valid pointer
-  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/boxed.rs:977:9
-   |
-LL |         Box(unsafe { Unique::new_unchecked(raw) }, alloc)
-   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 0x4 is not a valid pointer
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
            
-   = note: inside `std::boxed::Box::<i32>::from_raw_in` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/boxed.rs:977:9
-   = note: inside `std::boxed::Box::<i32>::from_raw` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/alloc/src/boxed.rs:921:18
+   = note: inside `std::boxed::Box::<i32>::from_raw_in` at rustc_src/src/boxed.rs:977:9
+   = note: inside `std::boxed::Box::<i32>::from_raw` at rustc_src/src/boxed.rs:921:18
 note: inside `main` at $DIR/issue-miri-1050-2.rs:6:5
   --> $DIR/issue-miri-1050-2.rs:6:5
    |

@@ -1,20 +1,16 @@
 thread 'main' panicked at '42-panicking from libstd', $DIR/panic_abort2.rs:5:5
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: abnormal termination: the program aborted execution
-  --> /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/panic_abort/src/lib.rs:43:17
    |
-LL |                 libc::abort();
-   |                 ^^^^^^^^^^^^^ the program aborted execution
-   |
-   = note: inside `panic_abort::__rust_start_panic::abort` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/panic_abort/src/lib.rs:43:17
-   = note: inside `panic_abort::__rust_start_panic` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/panic_abort/src/lib.rs:38:5
-   = note: inside `std::panicking::rust_panic` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:746:9
-   = note: inside `std::panicking::rust_panic_with_hook` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:716:5
-   = note: inside closure at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:588:13
-   = note: inside `std::sys_common::backtrace::__rust_end_short_backtrace::<[closure@std::panicking::begin_panic_handler::{closure#0}], !>` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/sys_common/backtrace.rs:138:18
-   = note: inside `std::panicking::begin_panic_handler` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panicking.rs:584:5
-   = note: inside `std::rt::panic_fmt` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/core/src/panicking.rs:143:14
-note: inside `main` at /home/ubuntu/.rustup/toolchains/miri/lib/rustlib/src/rust/library/std/src/panic.rs:29:9
+   = note: inside `panic_abort::__rust_start_panic::abort` at rustc_src/src/lib.rs:43:17
+   = note: inside `panic_abort::__rust_start_panic` at rustc_src/src/lib.rs:38:5
+   = note: inside `std::panicking::rust_panic` at rustc_src/src/panicking.rs:746:9
+   = note: inside `std::panicking::rust_panic_with_hook` at rustc_src/src/panicking.rs:716:5
+   = note: inside closure at rustc_src/src/panicking.rs:588:13
+   = note: inside `std::sys_common::backtrace::__rust_end_short_backtrace::<[closure@std::panicking::begin_panic_handler::{closure#0}], !>` at rustc_src/src/sys_common/backtrace.rs:138:18
+   = note: inside `std::panicking::begin_panic_handler` at rustc_src/src/panicking.rs:584:5
+   = note: inside `std::rt::panic_fmt` at rustc_src/src/panicking.rs:143:14
+note: inside `main` at rustc_src/src/panic.rs:29:9
   --> $DIR/panic_abort2.rs:5:5
    |
 LL |     std::panic!("{}-panicking from libstd", 42);
