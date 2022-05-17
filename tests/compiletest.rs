@@ -49,92 +49,95 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     let total = AtomicUsize::default();
     let skipped = AtomicUsize::default();
 
-    while let Some(path) = todo.pop() {
-        // Collect everything inside directories
-        if path.is_dir() {
-            for entry in grab_entries(&path) {
-                todo.push(entry);
-            }
-            continue;
-        }
-        // Only look at .rs files
-        if let Some(ext) = path.extension() {
-            if ext != "rs" {
+    crossbeam::scope(|_f| {
+        while let Some(path) = todo.pop() {
+            // Collect everything inside directories
+            if path.is_dir() {
+                for entry in grab_entries(&path) {
+                    todo.push(entry);
+                }
                 continue;
             }
-        } else {
-            continue;
-        }
-        total.fetch_add(1, Ordering::Relaxed);
-        // Read rules for skipping from file
-        if ignore_file(&path, &target) {
-            skipped.fetch_add(1, Ordering::Relaxed);
-            eprintln!("{} .. {}", path.display(), "skipped".yellow());
-            continue;
-        }
-
-        // Run miri
-        let mut miri = Command::new(miri_path());
-        miri.args(flags.iter());
-        miri.arg(&path);
-        miri.env("RUSTC_BACKTRACE", "0");
-        extract_env(&mut miri, &path);
-        let output = miri.output().expect("could not execute miri");
-
-        let mut ok = match (output.status.success(), mode) {
-            (false, Mode::UB) | (false, Mode::Panic) | (true, Mode::Pass) => true,
-            (true, Mode::Panic) | (true, Mode::UB) | (false, Mode::Pass) => false,
-        };
-
-        // Check output files (if any)
-        let stderr = std::str::from_utf8(&output.stderr).unwrap();
-        let stderr = normalize(&path, stderr);
-        let expected_stderr = if let Ok(_) = env::var("MIRI_BLESS") {
-            if stderr.is_empty() {
-                let _ = std::fs::remove_file(path.with_extension("stderr"));
+            // Only look at .rs files
+            if let Some(ext) = path.extension() {
+                if ext != "rs" {
+                    continue;
+                }
             } else {
-                std::fs::write(path.with_extension("stderr"), &stderr).unwrap();
+                continue;
             }
-            stderr.clone()
-        } else {
-            let expected_stderr =
-                std::fs::read_to_string(path.with_extension("stderr")).unwrap_or_default();
-            ok &= stderr == expected_stderr;
-            expected_stderr
-        };
+            total.fetch_add(1, Ordering::Relaxed);
+            // Read rules for skipping from file
+            if ignore_file(&path, &target) {
+                skipped.fetch_add(1, Ordering::Relaxed);
+                eprintln!("{} .. {}", path.display(), "skipped".yellow());
+                continue;
+            }
 
-        let stdout = std::str::from_utf8(&output.stdout).unwrap();
-        let stdout = normalize(&path, stdout);
-        let expected_stdout = if let Ok(_) = env::var("MIRI_BLESS") {
-            if stdout.is_empty() {
-                let _ = std::fs::remove_file(path.with_extension("stdout"));
+            // Run miri
+            let mut miri = Command::new(miri_path());
+            miri.args(flags.iter());
+            miri.arg(&path);
+            miri.env("RUSTC_BACKTRACE", "0");
+            extract_env(&mut miri, &path);
+            let output = miri.output().expect("could not execute miri");
+
+            let mut ok = match (output.status.success(), mode) {
+                (false, Mode::UB) | (false, Mode::Panic) | (true, Mode::Pass) => true,
+                (true, Mode::Panic) | (true, Mode::UB) | (false, Mode::Pass) => false,
+            };
+
+            // Check output files (if any)
+            let stderr = std::str::from_utf8(&output.stderr).unwrap();
+            let stderr = normalize(&path, stderr);
+            let expected_stderr = if let Ok(_) = env::var("MIRI_BLESS") {
+                if stderr.is_empty() {
+                    let _ = std::fs::remove_file(path.with_extension("stderr"));
+                } else {
+                    std::fs::write(path.with_extension("stderr"), &stderr).unwrap();
+                }
+                stderr.clone()
             } else {
-                std::fs::write(path.with_extension("stdout"), &stdout).unwrap();
-            }
-            stdout.clone()
-        } else {
-            let expected_stdout =
-                std::fs::read_to_string(path.with_extension("stdout")).unwrap_or_default();
-            ok &= stdout == expected_stdout;
-            expected_stdout
-        };
+                let expected_stderr =
+                    std::fs::read_to_string(path.with_extension("stderr")).unwrap_or_default();
+                ok &= stderr == expected_stderr;
+                expected_stderr
+            };
 
-        eprint!("{} .. ", path.display());
-        if ok {
-            eprintln!("{}", "ok".green());
-        } else {
-            eprintln!("{}", "FAILED".red().bold());
-            failures.lock().unwrap().push((
-                path,
-                output,
-                miri,
-                expected_stderr,
-                expected_stdout,
-                stderr,
-                stdout,
-            ));
+            let stdout = std::str::from_utf8(&output.stdout).unwrap();
+            let stdout = normalize(&path, stdout);
+            let expected_stdout = if let Ok(_) = env::var("MIRI_BLESS") {
+                if stdout.is_empty() {
+                    let _ = std::fs::remove_file(path.with_extension("stdout"));
+                } else {
+                    std::fs::write(path.with_extension("stdout"), &stdout).unwrap();
+                }
+                stdout.clone()
+            } else {
+                let expected_stdout =
+                    std::fs::read_to_string(path.with_extension("stdout")).unwrap_or_default();
+                ok &= stdout == expected_stdout;
+                expected_stdout
+            };
+
+            eprint!("{} .. ", path.display());
+            if ok {
+                eprintln!("{}", "ok".green());
+            } else {
+                eprintln!("{}", "FAILED".red().bold());
+                failures.lock().unwrap().push((
+                    path,
+                    output,
+                    miri,
+                    expected_stderr,
+                    expected_stdout,
+                    stderr,
+                    stdout,
+                ));
+            }
         }
-    }
+    })
+    .unwrap();
 
     let failures = failures.into_inner().unwrap();
     let total = total.load(Ordering::Relaxed);
