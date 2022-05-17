@@ -1,5 +1,5 @@
 error: Undefined Behavior: accessing memory with alignment 1, but alignment 4 is required
-  --> $DIR/unaligned_ptr2.rs:11:23
+  --> $DIR/unaligned_ptr2.rs:LL:CC
    |
 LL |     let _x = unsafe { *x }; //~ERROR memory with alignment 1, but alignment 4 is required
    |                       ^^ accessing memory with alignment 1, but alignment 4 is required
@@ -7,7 +7,7 @@ LL |     let _x = unsafe { *x }; //~ERROR memory with alignment 1, but alignment
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
            
-   = note: inside `main` at $DIR/unaligned_ptr2.rs:11:23
+   = note: inside `main` at $DIR/unaligned_ptr2.rs:LL:CC
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

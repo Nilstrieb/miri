@@ -1,5 +1,5 @@
 error[E0423]: expected function, found macro `println`
-  --> $DIR/rustc-error.rs:3:5
+  --> $DIR/rustc-error.rs:LL:CC
    |
 LL |     println("Hello, world!"); //~ ERROR expected function, found macro
    |     ^^^^^^^ not a function

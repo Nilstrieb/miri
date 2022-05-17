@@ -3,10 +3,10 @@ error: Undefined Behavior: overflow computing total size of `copy`
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
            
-   = note: inside `std::intrinsics::copy::<i32>` at rustc_src/src/intrinsics.rs:2193:14
-   = note: inside `std::ptr::mut_ptr::<impl *mut i32>::copy_from` at rustc_src/src/ptr/mut_ptr.rs:1032:18
-note: inside `main` at $DIR/copy_overflow.rs:8:9
-  --> $DIR/copy_overflow.rs:8:9
+   = note: inside `std::intrinsics::copy::<i32>` at rustc_src/src/intrinsics.rs:LL:CC
+   = note: inside `std::ptr::mut_ptr::<impl *mut i32>::copy_from` at rustc_src/src/ptr/mut_ptr.rs:LL:CC
+note: inside `main` at $DIR/copy_overflow.rs:LL:CC
+  --> $DIR/copy_overflow.rs:LL:CC
    |
 LL |         (&mut y as *mut i32).copy_from(&x, 1usize << (mem::size_of::<usize>() * 8 - 1));
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

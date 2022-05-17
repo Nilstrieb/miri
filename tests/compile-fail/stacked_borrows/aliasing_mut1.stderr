@@ -1,15 +1,29 @@
-error: Undefined Behavior: not granting access to tag <1901> because incompatible item is protected: [Unique for <1907> (call 611)]
-  --> $DIR/aliasing_mut1.rs:3:1
+error: Undefined Behavior: not granting access to tag <BORROW_IDX> because incompatible item is protected: [Unique for <BORROW_IDX> (call 929)]
+  --> $DIR/aliasing_mut1.rs:LL:CC
    |
 LL | pub fn safe(_x: &mut i32, _y: &mut i32) {} //~ ERROR protect
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not granting access to tag <1901> because incompatible item is protected: [Unique for <1907> (call 611)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not granting access to tag <BORROW_IDX> because incompatible item is protected: [Unique for <BORROW_IDX> (call 929)]
    |
    = help: this indicates a potential bug in the program: it performed an invalid operation, but the rules it violated are still experimental
    = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
-           
-   = note: inside `safe` at $DIR/aliasing_mut1.rs:3:1
-note: inside `main` at $DIR/aliasing_mut1.rs:14:5
-  --> $DIR/aliasing_mut1.rs:14:5
+help: <BORROW_IDX> was created by a retag at offsets [0x0..0x4]
+  --> $DIR/aliasing_mut1.rs:LL:CC
+   |
+LL |     let xraw: *mut i32 = unsafe { mem::transmute(&mut x) };
+   |                                                  ^^^^^^
+help: <BORROW_IDX> was protected due to <BORROW_IDX> which was created here
+  --> $DIR/aliasing_mut1.rs:LL:CC
+   |
+LL |     let xraw: *mut i32 = unsafe { mem::transmute(&mut x) };
+   |                                                  ^^^^^^
+help: this protector is live for this call
+  --> $DIR/aliasing_mut1.rs:LL:CC
+   |
+LL | pub fn safe(_x: &mut i32, _y: &mut i32) {} //~ ERROR protect
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: inside `safe` at $DIR/aliasing_mut1.rs:LL:CC
+note: inside `main` at $DIR/aliasing_mut1.rs:LL:CC
+  --> $DIR/aliasing_mut1.rs:LL:CC
    |
 LL |     safe_raw(xraw, xraw);
    |     ^^^^^^^^^^^^^^^^^^^^

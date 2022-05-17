@@ -1,6 +1,6 @@
-The following memory was leaked: alloc979 (Rust heap, size: 32, align: 8) {
+The following memory was leaked: ALLOC (Rust heap, size: 32, align: 8) {
     0x00 │ 01 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 │ ................
-    0x10 │ 00 00 00 00 00 00 00 00 ╾0x255c8[a979]<untagged> (8 ptr bytes)╼ │ ........╾──────╼
+    0x10 │ 00 00 00 00 00 00 00 00 ╾0x27e80[a1565]<untagged> (8 ptr bytes)╼ │ ........╾──────╼
 }
 
 error: the evaluated program leaked memory

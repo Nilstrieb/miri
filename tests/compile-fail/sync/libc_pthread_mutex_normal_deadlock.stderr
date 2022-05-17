@@ -1,10 +1,10 @@
 error: deadlock: the evaluated program deadlocked
-  --> $DIR/libc_pthread_mutex_normal_deadlock.rs:14:9
+  --> $DIR/libc_pthread_mutex_normal_deadlock.rs:LL:CC
    |
 LL |         libc::pthread_mutex_lock(&mut mutex as *mut _); //~ ERROR deadlock: the evaluated program deadlocked
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the evaluated program deadlocked
    |
-   = note: inside `main` at $DIR/libc_pthread_mutex_normal_deadlock.rs:14:9
+   = note: inside `main` at $DIR/libc_pthread_mutex_normal_deadlock.rs:LL:CC
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

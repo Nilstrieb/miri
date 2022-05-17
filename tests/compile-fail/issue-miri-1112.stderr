@@ -1,5 +1,5 @@
 error: Undefined Behavior: type validation failed: encountered invalid drop function pointer in vtable (function has incompatible signature)
-  --> $DIR/issue-miri-1112.rs:35:19
+  --> $DIR/issue-miri-1112.rs:LL:CC
    |
 LL |         let obj = std::mem::transmute::<FatPointer, *mut FunnyPointer>(obj); //~ ERROR invalid drop function pointer in vtable
    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered invalid drop function pointer in vtable (function has incompatible signature)
@@ -7,9 +7,9 @@ LL |         let obj = std::mem::transmute::<FatPointer, *mut FunnyPointer>(obj)
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
            
-   = note: inside `FunnyPointer::from_data_ptr` at $DIR/issue-miri-1112.rs:35:19
-note: inside `main` at $DIR/issue-miri-1112.rs:44:35
-  --> $DIR/issue-miri-1112.rs:44:35
+   = note: inside `FunnyPointer::from_data_ptr` at $DIR/issue-miri-1112.rs:LL:CC
+note: inside `main` at $DIR/issue-miri-1112.rs:LL:CC
+  --> $DIR/issue-miri-1112.rs:LL:CC
    |
 LL |         let _raw: &FunnyPointer = FunnyPointer::from_data_ptr(&hello, &meta as *const _);
    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

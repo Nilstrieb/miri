@@ -1,4 +1,4 @@
-The following memory was leaked: alloc968 (Rust heap, size: 4, align: 4) {
+The following memory was leaked: ALLOC (Rust heap, size: 4, align: 4) {
     2a 00 00 00                                     │ *...
 }
 

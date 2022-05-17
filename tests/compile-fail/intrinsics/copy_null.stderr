@@ -1,5 +1,5 @@
 error: Undefined Behavior: memory access failed: null pointer is not a valid pointer
-  --> $DIR/copy_null.rs:12:14
+  --> $DIR/copy_null.rs:LL:CC
    |
 LL |     unsafe { copy_nonoverlapping(std::ptr::null(), ptr, 0); } //~ ERROR: memory access failed: null pointer is not a valid pointer
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ memory access failed: null pointer is not a valid pointer
@@ -7,7 +7,7 @@ LL |     unsafe { copy_nonoverlapping(std::ptr::null(), ptr, 0); } //~ ERROR: me
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
            
-   = note: inside `main` at $DIR/copy_null.rs:12:14
+   = note: inside `main` at $DIR/copy_null.rs:LL:CC
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 

@@ -1,13 +1,13 @@
-error: Undefined Behavior: pointer to alloc3 was dereferenced after this allocation got freed
-  --> $DIR/environ-gets-deallocated.rs:23:23
+error: Undefined Behavior: pointer to ALLOC was dereferenced after this allocation got freed
+  --> $DIR/environ-gets-deallocated.rs:LL:CC
    |
 LL |     let _y = unsafe { *pointer }; //~ ERROR dereferenced after this allocation got freed
-   |                       ^^^^^^^^ pointer to alloc3 was dereferenced after this allocation got freed
+   |                       ^^^^^^^^ pointer to ALLOC was dereferenced after this allocation got freed
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
            
-   = note: inside `main` at $DIR/environ-gets-deallocated.rs:23:23
+   = note: inside `main` at $DIR/environ-gets-deallocated.rs:LL:CC
 
 note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
 
