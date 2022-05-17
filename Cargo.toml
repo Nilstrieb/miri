@@ -41,6 +41,7 @@ rustc_version = "0.4"
 colored = "2"
 regex = "1.5.5"
 pretty_assertions = "1.2.1"
+crossbeam = "0.8.1"
 
 [package.metadata.rust-analyzer]
 # This crate uses #[feature(rustc_private)].

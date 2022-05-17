@@ -1,9 +1,11 @@
-use std::collections::VecDeque;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Mutex;
 
 use colored::*;
+use crossbeam::queue::SegQueue;
 use regex::Regex;
 
 fn miri_path() -> PathBuf {
@@ -40,16 +42,19 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
 
     let grab_entries =
         |path: &Path| std::fs::read_dir(path).unwrap().map(|entry| entry.unwrap().path());
-    let mut todo: VecDeque<PathBuf> = grab_entries(Path::new(path)).collect();
+    let todo = SegQueue::new();
+    todo.push(PathBuf::from(path));
 
-    let mut failures = vec![];
-    let mut total = 0;
-    let mut skipped = 0;
+    let failures = Mutex::new(vec![]);
+    let total = AtomicUsize::default();
+    let skipped = AtomicUsize::default();
 
-    while let Some(path) = todo.pop_front() {
+    while let Some(path) = todo.pop() {
         // Collect everything inside directories
         if path.is_dir() {
-            todo.extend(grab_entries(&path));
+            for entry in grab_entries(&path) {
+                todo.push(entry);
+            }
             continue;
         }
         // Only look at .rs files
@@ -60,10 +65,10 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
         } else {
             continue;
         }
-        total += 1;
+        total.fetch_add(1, Ordering::Relaxed);
         // Read rules for skipping from file
         if ignore_file(&path, &target) {
-            skipped += 1;
+            skipped.fetch_add(1, Ordering::Relaxed);
             eprintln!("{} .. {}", path.display(), "skipped".yellow());
             continue;
         }
@@ -119,10 +124,21 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
             eprintln!("{}", "ok".green());
         } else {
             eprintln!("{}", "FAILED".red().bold());
-            failures.push((path, output, miri, expected_stderr, expected_stdout, stderr, stdout));
+            failures.lock().unwrap().push((
+                path,
+                output,
+                miri,
+                expected_stderr,
+                expected_stdout,
+                stderr,
+                stdout,
+            ));
         }
     }
 
+    let failures = failures.into_inner().unwrap();
+    let total = total.load(Ordering::Relaxed);
+    let skipped = skipped.load(Ordering::Relaxed);
     if !failures.is_empty() {
         for (path, output, miri, expected_stderr, expected_stdout, stderr, stdout) in &failures {
             eprintln!("{} failed, {}", path.display(), output.status);
