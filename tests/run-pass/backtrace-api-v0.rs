@@ -1,5 +1,3 @@
-// normalize-stderr-test ".*/(rust[^/]*|checkout)/library/" -> "RUSTLIB/"
-// normalize-stderr-test "RUSTLIB/(.*):\d+:\d+ "-> "RUSTLIB/$1:LL:COL "
 // normalize-stderr-test "::<.*>" -> ""
 
 #[inline(never)] fn func_a() -> Box<[*mut ()]> { func_b::<u8>() }

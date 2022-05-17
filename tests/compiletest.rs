@@ -205,6 +205,12 @@ fn normalize(path: &Path, text: &str) -> String {
     let from = Regex::new("<[0-9]+>").unwrap();
     text = from.replace_all(&text, "<BORROW_IDX>").to_string();
 
+    // backtrace noise
+    let from = Regex::new("at .*/(rust[^/]*|checkout)/library/.*").unwrap();
+    text = from.replace_all(&text, "at RUSTLIB/$$FILE:LL:COL").to_string();
+    let from = Regex::new("([0-9]+: .*)::<.*>").unwrap();
+    text = from.replace_all(&text, "$1").to_string();
+
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// normalize-stderr-test") {
             let (from, to) = s.split_once("->").expect("normalize-stderr-test needs a `->`");

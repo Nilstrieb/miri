@@ -2,11 +2,11 @@ thread 'main' panicked at 'first', $DIR/double_panic.rs:LL:CC
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 thread 'main' panicked at 'second', $DIR/double_panic.rs:LL:CC
 stack backtrace:
-   0:           0x272ec6 - std::backtrace_rs::backtrace::miri::trace_unsynchronized::<&mut [closure@std::sys_common::backtrace::_print_fmt::{closure#1}]>
+   0:           0x272ec6 - std::backtrace_rs::backtrace::miri::trace_unsynchronized
                                at rustc_src/src/../../backtrace/src/backtrace/miri.rs:LL:CC
-   1:           0x272d34 - std::backtrace_rs::backtrace::miri::trace::<&mut [closure@std::sys_common::backtrace::_print_fmt::{closure#1}]>
+   1:           0x272d34 - std::backtrace_rs::backtrace::miri::trace
                                at rustc_src/src/../../backtrace/src/backtrace/miri.rs:LL:CC
-   2:           0x2171fe - std::backtrace_rs::backtrace::trace_unsynchronized::<[closure@std::sys_common::backtrace::_print_fmt::{closure#1}]>
+   2:           0x2171fe - std::backtrace_rs::backtrace::trace_unsynchronized
                                at rustc_src/src/../../backtrace/src/backtrace/mod.rs:LL:CC
    3:           0x1f9b29 - std::sys_common::backtrace::_print_fmt
                                at rustc_src/src/sys_common/backtrace.rs:LL:CC
@@ -26,43 +26,43 @@ stack backtrace:
                                at rustc_src/src/panicking.rs:LL:CC
   11:           0x2149dc - std::panicking::rust_panic_with_hook
                                at rustc_src/src/panicking.rs:LL:CC
-  12:           0x213c53 - std::rt::begin_panic::<&str>::{closure#0}
+  12:           0x213c53 - std::rt::begin_panic::{closure#0}
                                at rustc_src/src/panicking.rs:LL:CC
-  13:           0x1fa3cb - std::sys_common::backtrace::__rust_end_short_backtrace::<[closure@std::rt::begin_panic<&str>::{closure#0}], !>
+  13:           0x1fa3cb - std::sys_common::backtrace::__rust_end_short_backtrace
                                at rustc_src/src/sys_common/backtrace.rs:LL:CC
-  14:           0x213c19 - std::rt::begin_panic::<&str>
+  14:           0x213c19 - std::rt::begin_panic
                                at rustc_src/src/panicking.rs:LL:CC
   15:            0x3fc17 - <Foo as std::ops::Drop>::drop
                                at $DIR/double_panic.rs:LL:CC
-  16:           0x38fcb9 - std::ptr::drop_in_place::<Foo> - shim(Some(Foo))
+  16:           0x38fcb9 - std::ptr::drop_in_place - shim(Some(Foo))
                                at rustc_src/src/ptr/mod.rs:LL:CC
   17:            0x201b8 - main
                                at $DIR/double_panic.rs:LL:CC
   18:           0x403b50 - <fn() as std::ops::FnOnce<()>>::call_once - shim(fn())
                                at rustc_src/src/ops/function.rs:LL:CC
-  19:           0x1fa22d - std::sys_common::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  19:           0x1fa22d - std::sys_common::backtrace::__rust_begin_short_backtrace
                                at rustc_src/src/sys_common/backtrace.rs:LL:CC
-  20:            0x48f2e - std::rt::lang_start::<()>::{closure#0}
+  20:            0x48f2e - std::rt::lang_start::{closure#0}
                                at rustc_src/src/rt.rs:LL:CC
-  21:           0x403e8f - std::ops::function::impls::<impl std::ops::FnOnce<()> for &dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe>::call_once
+  21:           0x403e8f - std::ops::function::impls::call_once
                                at rustc_src/src/ops/function.rs:LL:CC
-  22:           0x212b64 - std::panicking::r#try::do_call::<&dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe, i32>
+  22:           0x212b64 - std::panicking::r#try::do_call
                                at rustc_src/src/panicking.rs:LL:CC
-  23:           0x212502 - std::panicking::r#try::<i32, &dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe>
+  23:           0x212502 - std::panicking::r#try
                                at rustc_src/src/panicking.rs:LL:CC
-  24:           0x1834ad - std::panic::catch_unwind::<&dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe, i32>
+  24:           0x1834ad - std::panic::catch_unwind
                                at rustc_src/src/panic.rs:LL:CC
   25:            0x48d7e - std::rt::lang_start_internal::{closure#2}
                                at rustc_src/src/rt.rs:LL:CC
-  26:           0x212b84 - std::panicking::r#try::do_call::<[closure@std::rt::lang_start_internal::{closure#2}], isize>
+  26:           0x212b84 - std::panicking::r#try::do_call
                                at rustc_src/src/panicking.rs:LL:CC
-  27:           0x212530 - std::panicking::r#try::<isize, [closure@std::rt::lang_start_internal::{closure#2}]>
+  27:           0x212530 - std::panicking::r#try
                                at rustc_src/src/panicking.rs:LL:CC
-  28:           0x1834e3 - std::panic::catch_unwind::<[closure@std::rt::lang_start_internal::{closure#2}], isize>
+  28:           0x1834e3 - std::panic::catch_unwind
                                at rustc_src/src/panic.rs:LL:CC
   29:            0x48d99 - std::rt::lang_start_internal
                                at rustc_src/src/rt.rs:LL:CC
-  30:            0x48f6f - std::rt::lang_start::<()>
+  30:            0x48f6f - std::rt::lang_start
                                at rustc_src/src/rt.rs:LL:CC
 thread panicked while panicking. aborting.
 error: abnormal termination: the program aborted execution
