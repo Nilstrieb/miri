@@ -87,8 +87,8 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     let mut ok = mode.ok(output.status);
 
                     // Check output files (if any)
-                    let (stderr, expected_stderr) = extract_output(&output.stderr, &path, &mut ok, "stderr");
-                    let (stdout, expected_stdout) = extract_output(&output.stdout, &path, &mut ok, "stdout");
+                    let (stderr, expected_stderr) = extract_output(&output.stderr, &path, &mut ok, "stderr", &target);
+                    let (stdout, expected_stdout) = extract_output(&output.stdout, &path, &mut ok, "stdout", &target);
 
                     eprint!("{} .. ", path.display());
                     if ok {
@@ -136,10 +136,10 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     );
 }
 
-fn extract_output(output: &[u8], path: &PathBuf, ok: &mut bool, kind: &str) -> (String, String) {
+fn extract_output(output: &[u8], path: &PathBuf, ok: &mut bool, kind: &str, target: &str) -> (String, String) {
     let output = std::str::from_utf8(&output).unwrap();
     let output = normalize(path, output);
-    let path = output_path(path, kind);
+    let path = output_path(path, kind, target);
     let expected_output = if let Ok(_) = env::var("MIRI_BLESS") {
         if output.is_empty() {
             let _ = std::fs::remove_file(path);
@@ -157,7 +157,13 @@ fn extract_output(output: &[u8], path: &PathBuf, ok: &mut bool, kind: &str) -> (
     (output, expected_output)
 }
 
-fn output_path(path: &Path, kind: &str) -> PathBuf {
+fn output_path(path: &Path, kind: &str, target: &str) -> PathBuf {
+    let content = std::fs::read_to_string(path).unwrap();
+    for line in content.lines() {
+        if line.starts_with("// stderr-per-bitwidth") {
+            return path.with_extension(format!("{}.{kind}", get_pointer_width(target)));
+        }
+    }
     path.with_extension(kind)
 }
 
