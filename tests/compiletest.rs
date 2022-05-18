@@ -228,8 +228,8 @@ fn normalize(path: &Path, text: &str) -> String {
     text = from.replace_all(&text, "<BORROW_IDX>").to_string();
 
     // backtrace noise
-    let from = Regex::new("at .*/(rust[^/]*|checkout)/library/.*").unwrap();
-    text = from.replace_all(&text, "at RUSTLIB/$$FILE:LL:COL").to_string();
+    let from = Regex::new(" +at (.*\\.rs)").unwrap();
+    text = from.replace_all(&text, " at $1").to_string();
     let from = Regex::new("([0-9]+: .*)::<.*>").unwrap();
     text = from.replace_all(&text, "$1").to_string();
     let from = Regex::new("([0-9]+: ) +0x[0-9a-f]+ - (.*)").unwrap();
