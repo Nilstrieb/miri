@@ -322,20 +322,40 @@ fn extract_env(cmd: &mut Command, path: &Path) {
     }
 }
 
-lazy_static::lazy_static! {
-    static ref LINE_COL: (Regex, &'static str) = (Regex::new("\\.rs:[0-9]+:[0-9]+").unwrap(), ".rs:LL:CC");
-    static ref ALLOC_IDS: (Regex, &'static str) = (Regex::new("alloc[0-9]+").unwrap(), "ALLOC");
-    static ref BORROW_IDX: (Regex, &'static str) = (Regex::new("<[0-9]+>").unwrap(), "<BORROW_IDX>");
-    static ref BACKTRACE_WHITESPACE: (Regex, &'static str) = (Regex::new(" +at (.*\\.rs)").unwrap(), " at $1");
-    static ref BACKTRACE_GENERICS: (Regex, &'static str) = (Regex::new("([0-9]+: .*)::<.*>").unwrap(), "$1");
-    static ref BACKTRACE_ADDRESSES: (Regex, &'static str) = (Regex::new("([0-9]+: ) +0x[0-9a-f]+ - (.*)").unwrap(), "$1$2");
-    static ref HEXADECIMALS: (Regex, &'static str) = (Regex::new("0x[0-9a-fA-F]+(\\[a[0-9]+\\])?").unwrap(), "$$HEX");
-    static ref VCLOCK: (Regex, &'static str) = (Regex::new("VClock\\(\\[[^\\]]+\\]\\)").unwrap(), "VClock");
-    static ref ALIGNMENT: (Regex, &'static str) = (Regex::new("alignment [0-9]+").unwrap(), "alignment ALIGN");
-    static ref CALL_ID: (Regex, &'static str) = (Regex::new("\\(call [0-9]+\\)").unwrap(), "(call ID)");
-    static ref SYS_MOD_PATH: (Regex, &'static str) = (Regex::new("sys::[a-z]+::").unwrap(), "sys::PLATFORM::");
-    static ref SYS_FILE_PATH: (Regex, &'static str) = (Regex::new("sys/[a-z]+/").unwrap(), "sys/PLATFORM/");
-    static ref ERROR_COMMENTS: (Regex, &'static str) = (Regex::new("\\s*//~.*").unwrap(), "");
+macro_rules! regexes {
+    ($($regex:expr => $replacement:expr,)*) => {lazy_static::lazy_static! {
+        static ref REGEXES: Vec<(Regex, &'static str)> = vec![
+            $((Regex::new($regex).unwrap(), $replacement),)*
+        ];
+    }};
+}
+
+regexes! {
+    // erase line and column info
+    "\\.rs:[0-9]+:[0-9]+"            => ".rs:LL:CC",
+    // erase alloc ids
+    "alloc[0-9]+"                    => "ALLOC",
+    // erase borrow stack indices
+    "<[0-9]+>"                       => "<BORROW_IDX>",
+    // erase whitespace that differs between platforms
+    " +at (.*\\.rs)"                 => " at $1",
+    // erase generics in backtraces
+    "([0-9]+: .*)::<.*>"             => "$1",
+    // erase addresses in backtraces
+    "([0-9]+: ) +0x[0-9a-f]+ - (.*)" => "$1$2",
+    // erase hexadecimals
+    "0x[0-9a-fA-F]+(\\[a[0-9]+\\])?" => "$$HEX",
+    // erase clocks
+    "VClock\\(\\[[^\\]]+\\]\\)"      => "VClock",
+    // erase specific alignments
+    "alignment [0-9]+"               => "alignment ALIGN",
+    // erase thread caller ids
+    "\\(call [0-9]+\\)"              => "(call ID)",
+    // erase platform module paths
+    "sys::[a-z]+::"                  => "sys::PLATFORM::",
+    "sys/[a-z]+/"                    => "sys/PLATFORM/",
+    // erase error annotations in tests
+    "\\s*//~.*"                      => "",
 }
 
 fn normalize(path: &Path, text: &str) -> String {
@@ -347,26 +367,10 @@ fn normalize(path: &Path, text: &str) -> String {
         text = text.replace(lib_path, "RUSTLIB");
     }
 
-    let regexes = &[
-        &*LINE_COL,
-        &*ALLOC_IDS,
-        &*BORROW_IDX,
-        &*BACKTRACE_WHITESPACE,
-        &*BACKTRACE_GENERICS,
-        &*BACKTRACE_ADDRESSES,
-        &*HEXADECIMALS,
-        &*VCLOCK,
-        &*ALIGNMENT,
-        &*CALL_ID,
-        &*SYS_MOD_PATH,
-        &*SYS_FILE_PATH,
-        &*ERROR_COMMENTS,
-    ];
-
-    for (regex, replacement) in regexes {
+    for (regex, replacement) in REGEXES.iter() {
         text = regex.replace_all(&text, *replacement).to_string();
     }
-    
+
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// normalize-stderr-test") {
             let (from, to) = s.split_once("->").expect("normalize-stderr-test needs a `->`");
