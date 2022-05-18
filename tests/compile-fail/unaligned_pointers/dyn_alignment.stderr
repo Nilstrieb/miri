@@ -1,8 +1,8 @@
-error: Undefined Behavior: accessing memory with alignment 4, but alignment 256 is required
+error: Undefined Behavior: accessing memory with alignment ALIGN, but alignment ALIGN is required
   --> $DIR/dyn_alignment.rs:LL:CC
    |
-LL |         let _ptr = &*ptr; //~ERROR alignment 256 is required
-   |                    ^^^^^ accessing memory with alignment 4, but alignment 256 is required
+LL |         let _ptr = &*ptr; //~ERROR alignment ALIGN is required
+   |                    ^^^^^ accessing memory with alignment ALIGN, but alignment ALIGN is required
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
