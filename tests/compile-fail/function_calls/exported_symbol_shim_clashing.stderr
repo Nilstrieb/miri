@@ -8,7 +8,7 @@ help: the `malloc` symbol is defined here
   --> $DIR/exported_symbol_shim_clashing.rs:LL:CC
    |
 LL | / extern "C" fn malloc(_: usize) -> *mut std::ffi::c_void {
-LL | |     //~^ HELP the `malloc` symbol is defined here
+LL | |
 LL | |     unreachable!()
 LL | | }
    | |_^

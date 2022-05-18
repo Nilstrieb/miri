@@ -1,7 +1,7 @@
 error: Undefined Behavior: trying to reborrow <BORROW_IDX> for SharedReadWrite permission at ALLOC[$HEX], but that tag does not exist in the borrow stack for this location
   --> $DIR/shared_rw_borrows_are_weak1.rs:LL:CC
    |
-LL |     y.get_mut(); //~ ERROR borrow stack
+LL |     y.get_mut();
    |     ^^^^^^^^^^^
    |     |
    |     trying to reborrow <BORROW_IDX> for SharedReadWrite permission at ALLOC[$HEX], but that tag does not exist in the borrow stack for this location

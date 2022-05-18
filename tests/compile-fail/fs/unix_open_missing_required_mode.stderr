@@ -1,7 +1,7 @@
 error: Undefined Behavior: incorrect number of arguments for `open` with `O_CREAT`: got 2, expected at least 3
   --> $DIR/unix_open_missing_required_mode.rs:LL:CC
    |
-LL | ...safe { libc::open(name_ptr, libc::O_CREAT) }; //~ ERROR Undefined Behavior: incorrect number of arguments for `open` with `O_CREAT`: g...
+LL | ...safe { libc::open(name_ptr, libc::O_CREAT) };
    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ incorrect number of arguments for `open` with `O_CREAT`: got 2, expected at least 3
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

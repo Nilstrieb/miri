@@ -1,7 +1,7 @@
 error: Undefined Behavior: not granting access to tag <BORROW_IDX> because incompatible item is protected: [Unique for <BORROW_IDX> (call 929)]
   --> $DIR/aliasing_mut1.rs:LL:CC
    |
-LL | pub fn safe(_x: &mut i32, _y: &mut i32) {} //~ ERROR protect
+LL | pub fn safe(_x: &mut i32, _y: &mut i32) {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not granting access to tag <BORROW_IDX> because incompatible item is protected: [Unique for <BORROW_IDX> (call 929)]
    |
    = help: this indicates a potential bug in the program: it performed an invalid operation, but the rules it violated are still experimental
@@ -19,7 +19,7 @@ LL |     let xraw: *mut i32 = unsafe { mem::transmute(&mut x) };
 help: this protector is live for this call
   --> $DIR/aliasing_mut1.rs:LL:CC
    |
-LL | pub fn safe(_x: &mut i32, _y: &mut i32) {} //~ ERROR protect
+LL | pub fn safe(_x: &mut i32, _y: &mut i32) {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: inside `safe` at $DIR/aliasing_mut1.rs:LL:CC
 note: inside `main` at $DIR/aliasing_mut1.rs:LL:CC

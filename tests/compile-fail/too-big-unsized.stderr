@@ -1,7 +1,7 @@
 error: Undefined Behavior: type validation failed: encountered invalid reference metadata: total size is bigger than largest supported object
   --> $DIR/too-big-unsized.rs:LL:CC
    |
-LL |     let _x: &MySlice = mem::transmute((ptr, isize::MAX as usize)); //~ ERROR: invalid reference metadata: total size is bigger than large...
+LL |     let _x: &MySlice = mem::transmute((ptr, isize::MAX as usize));
    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered invalid reference metadata: total size is bigger than largest supported object
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior

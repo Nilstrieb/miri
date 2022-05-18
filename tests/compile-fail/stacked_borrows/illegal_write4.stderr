@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a read access using <BORROW_IDX> at ALLOC[$HEX], but that tag does not exist in the borrow stack for this location
   --> $DIR/illegal_write4.rs:LL:CC
    |
-LL |     let _val = *reference; //~ ERROR borrow stack
+LL |     let _val = *reference;
    |                ^^^^^^^^^^
    |                |
    |                attempting a read access using <BORROW_IDX> at ALLOC[$HEX], but that tag does not exist in the borrow stack for this location

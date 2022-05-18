@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a read access using <BORROW_IDX> at ALLOC[$HEX], but that tag does not exist in the borrow stack for this location
   --> $DIR/box_exclusive_violation1.rs:LL:CC
    |
-LL |   *our //~ ERROR borrow stack
+LL |   *our
    |   ^^^^
    |   |
    |   attempting a read access using <BORROW_IDX> at ALLOC[$HEX], but that tag does not exist in the borrow stack for this location
@@ -17,7 +17,7 @@ LL | |   unknown_code_1(&*our);
 LL | |
 LL | |   // This "re-asserts" uniqueness of the reference: After writing, we know
 ...  |
-LL | |   *our //~ ERROR borrow stack
+LL | |   *our
 LL | | }
    | |_^
 help: <BORROW_IDX> was later invalidated at offsets [$HEX..$HEX]

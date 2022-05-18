@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a write access using <untagged> at ALLOC[$HEX], but that tag only grants SharedReadOnly permission for this location
   --> $DIR/shr_frozen_violation1.rs:LL:CC
    |
-LL |     unsafe { *(x as *const i32 as *mut i32) = 7; } //~ ERROR only grants SharedReadOnly permission
+LL |     unsafe { *(x as *const i32 as *mut i32) = 7; }
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |              |
    |              attempting a write access using <untagged> at ALLOC[$HEX], but that tag only grants SharedReadOnly permission for this location
@@ -12,7 +12,7 @@ LL |     unsafe { *(x as *const i32 as *mut i32) = 7; } //~ ERROR only grants Sh
 help: tag was most recently created at offsets [$HEX..$HEX]
   --> $DIR/shr_frozen_violation1.rs:LL:CC
    |
-LL |     unsafe { *(x as *const i32 as *mut i32) = 7; } //~ ERROR only grants SharedReadOnly permission
+LL |     unsafe { *(x as *const i32 as *mut i32) = 7; }
    |                ^
    = note: inside `unknown_code` at $DIR/shr_frozen_violation1.rs:LL:CC
 note: inside `foo` at $DIR/shr_frozen_violation1.rs:LL:CC

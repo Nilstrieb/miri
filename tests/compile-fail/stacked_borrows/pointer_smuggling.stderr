@@ -1,7 +1,7 @@
 error: Undefined Behavior: attempting a read access using <untagged> at ALLOC[$HEX], but that tag does not exist in the borrow stack for this location
   --> $DIR/pointer_smuggling.rs:LL:CC
    |
-LL |     let _x = unsafe { *PTR }; //~ ERROR borrow stack
+LL |     let _x = unsafe { *PTR };
    |                       ^^^^
    |                       |
    |                       attempting a read access using <untagged> at ALLOC[$HEX], but that tag does not exist in the borrow stack for this location
