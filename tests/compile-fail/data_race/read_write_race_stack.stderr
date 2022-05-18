@@ -1,10 +1,10 @@
 warning: thread support is experimental and incomplete: weak memory effects are not emulated.
 
-error: Undefined Behavior: Data race detected between Read on Thread(id = 1) and Write on Thread(id = 2) at ALLOC (current vector clock = VClock([0, 7]), conflicting timestamp = VClock([0, 0, 7]))
+error: Undefined Behavior: Data race detected between Read on Thread(id = 1) and Write on Thread(id = 2) at ALLOC (current vector clock = VClock, conflicting timestamp = VClock)
   --> $DIR/read_write_race_stack.rs:LL:CC
    |
 LL |             stack_var
-   |             ^^^^^^^^^ Data race detected between Read on Thread(id = 1) and Write on Thread(id = 2) at ALLOC (current vector clock = VClock([0, 7]), conflicting timestamp = VClock([0, 0, 7]))
+   |             ^^^^^^^^^ Data race detected between Read on Thread(id = 1) and Write on Thread(id = 2) at ALLOC (current vector clock = VClock, conflicting timestamp = VClock)
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information

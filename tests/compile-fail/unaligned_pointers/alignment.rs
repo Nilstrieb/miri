@@ -1,4 +1,4 @@
-// error-pattern: but alignment 4 is required
+// error-pattern: but alignment ALIGN is required
 
 fn main() {
     // No retry needed, this fails reliably.

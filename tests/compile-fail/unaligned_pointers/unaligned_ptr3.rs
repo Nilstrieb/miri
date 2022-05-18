@@ -1,6 +1,5 @@
 // This should fail even without validation or Stacked Borrows.
 // compile-flags: -Zmiri-disable-validation -Zmiri-disable-stacked-borrows
-// normalize-stderr-test "alignment [0-9]+" -> "alignment ALIGN"
 
 fn main() {
     for _ in 0..10 { // Try many times as this might work by chance.

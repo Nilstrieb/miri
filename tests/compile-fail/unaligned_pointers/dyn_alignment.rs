@@ -1,6 +1,5 @@
 // should find the bug even without validation and stacked borrows, but gets masked by optimizations
 // compile-flags: -Zmiri-disable-validation -Zmiri-disable-stacked-borrows -Zmir-opt-level=0
-// normalize-stderr-test "alignment [0-9]+" -> "alignment ALIGN"
 
 #[repr(align(256))]
 #[derive(Debug)]

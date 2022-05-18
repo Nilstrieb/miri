@@ -279,6 +279,16 @@ fn ignore_file(p: &Path, target: &str) -> bool {
                 return true;
             }
         }
+        if let Some(s) = line.strip_prefix("// only-") {
+            let s =
+                s.split_once(|c: char| c == ':' || c.is_whitespace()).map(|(s, _)| s).unwrap_or(s);
+            if !target.contains(s) {
+                return true;
+            }
+            if !get_pointer_width(target).contains(s) {
+                return true;
+            }
+        }
     }
     false
 }
@@ -342,6 +352,13 @@ fn normalize(path: &Path, text: &str) -> String {
     text = from.replace_all(&text, "$1$2").to_string();
     let from = Regex::new("0x[0-9a-fA-F]+").unwrap();
     text = from.replace_all(&text, "$$HEX").to_string();
+    //VClock([14, 0, 4]
+    let from = Regex::new("VClock\\(\\[[^\\]]+\\]\\)").unwrap();
+    text = from.replace_all(&text, "VClock").to_string();
+    let from = Regex::new("alignment [0-9]+").unwrap();
+    text = from.replace_all(&text, "alignment ALIGN").to_string();
+    let from = Regex::new("\\(call [0-9]+\\)").unwrap();
+    text = from.replace_all(&text, "(call ID)").to_string();
 
     // strip error comments from output
     let from = Regex::new("\\s*//~.*").unwrap();
