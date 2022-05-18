@@ -70,14 +70,14 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     } else {
                         continue;
                     }
-                    total.fetch_add(1, Ordering::Relaxed);    // Read rules for skipping from file
+                    total.fetch_add(1, Ordering::Relaxed); // Read rules for skipping from file
                     if ignore_file(&path, &target) {
                         skipped.fetch_add(1, Ordering::Relaxed);
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
                         continue;
                     }
                     match run_test(path, &target, &flags, mode) {
-                        Ok(()) => {},
+                        Ok(()) => {}
                         Err(failure) => failures.lock().unwrap().push(failure),
                     }
                 }
@@ -111,7 +111,12 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     );
 }
 
-fn run_test(path: PathBuf, target: &String, flags: &[String], mode: Mode) -> Result<(), (PathBuf, Output, Command, String, String, String, String)> {
+fn run_test(
+    path: PathBuf,
+    target: &String,
+    flags: &[String],
+    mode: Mode,
+) -> Result<(), (PathBuf, Output, Command, String, String, String, String)> {
     // Run miri
     let mut miri = Command::new(miri_path());
     miri.args(flags.iter());
@@ -121,8 +126,10 @@ fn run_test(path: PathBuf, target: &String, flags: &[String], mode: Mode) -> Res
     let output = miri.output().expect("could not execute miri");
     let mut ok = mode.ok(output.status);
     // Check output files (if any)
-    let (stderr, expected_stderr) = extract_output(&output.stderr, &path, &mut ok, "stderr", target);
-    let (stdout, expected_stdout) = extract_output(&output.stdout, &path, &mut ok, "stdout", target);
+    let (stderr, expected_stderr) =
+        extract_output(&output.stderr, &path, &mut ok, "stderr", target);
+    let (stdout, expected_stdout) =
+        extract_output(&output.stdout, &path, &mut ok, "stdout", target);
     let require = match mode {
         Mode::Pass => false,
         Mode::Panic => false, // Should we do anything here?
@@ -135,15 +142,7 @@ fn run_test(path: PathBuf, target: &String, flags: &[String], mode: Mode) -> Res
         Ok(())
     } else {
         eprintln!("{}", "FAILED".red().bold());
-        Err((
-            path,
-            output,
-            miri,
-            expected_stderr,
-            expected_stdout,
-            stderr,
-            stdout,
-        ))
+        Err((path, output, miri, expected_stderr, expected_stdout, stderr, stdout))
     }
 }
 
@@ -173,7 +172,13 @@ fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool) {
     }
 }
 
-fn extract_output(output: &[u8], path: &PathBuf, ok: &mut bool, kind: &str, target: &str) -> (String, String) {
+fn extract_output(
+    output: &[u8],
+    path: &PathBuf,
+    ok: &mut bool,
+    kind: &str,
+    target: &str,
+) -> (String, String) {
     let output = std::str::from_utf8(&output).unwrap();
     let output = normalize(path, output);
     let path = output_path(path, kind, target);
@@ -185,9 +190,7 @@ fn extract_output(output: &[u8], path: &PathBuf, ok: &mut bool, kind: &str, targ
         }
         output.clone()
     } else {
-        let expected_output =
-            std::fs::read_to_string(path)
-                .unwrap_or_default();
+        let expected_output = std::fs::read_to_string(path).unwrap_or_default();
         *ok &= output == expected_output;
         expected_output
     };
