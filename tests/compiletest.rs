@@ -332,41 +332,40 @@ fn normalize(path: &Path, text: &str) -> String {
     }
 
     // Line endings
-    let from = Regex::new("\\.rs:[0-9]+:[0-9]+").unwrap();
-    text = from.replace_all(&text, ".rs:LL:CC").to_string();
+    let LINE_COL = Regex::new("\\.rs:[0-9]+:[0-9]+").unwrap();
+    text = LINE_COL.replace_all(&text, ".rs:LL:CC").to_string();
 
     // alloc ids
-    let from = Regex::new("alloc[0-9]+").unwrap();
-    text = from.replace_all(&text, "ALLOC").to_string();
+    let ALLOC_IDS = Regex::new("alloc[0-9]+").unwrap();
+    text = ALLOC_IDS.replace_all(&text, "ALLOC").to_string();
 
     // borrow stack indices
-    let from = Regex::new("<[0-9]+>").unwrap();
-    text = from.replace_all(&text, "<BORROW_IDX>").to_string();
+    let BORROW_IDX = Regex::new("<[0-9]+>").unwrap();
+    text = BORROW_IDX.replace_all(&text, "<BORROW_IDX>").to_string();
 
     // backtrace noise
-    let from = Regex::new(" +at (.*\\.rs)").unwrap();
-    text = from.replace_all(&text, " at $1").to_string();
-    let from = Regex::new("([0-9]+: .*)::<.*>").unwrap();
-    text = from.replace_all(&text, "$1").to_string();
-    let from = Regex::new("([0-9]+: ) +0x[0-9a-f]+ - (.*)").unwrap();
-    text = from.replace_all(&text, "$1$2").to_string();
-    let from = Regex::new("0x[0-9a-fA-F]+(\\[a[0-9]+\\])?").unwrap();
-    text = from.replace_all(&text, "$$HEX").to_string();
-    //VClock([14, 0, 4]
-    let from = Regex::new("VClock\\(\\[[^\\]]+\\]\\)").unwrap();
-    text = from.replace_all(&text, "VClock").to_string();
-    let from = Regex::new("alignment [0-9]+").unwrap();
-    text = from.replace_all(&text, "alignment ALIGN").to_string();
-    let from = Regex::new("\\(call [0-9]+\\)").unwrap();
-    text = from.replace_all(&text, "(call ID)").to_string();
-    let from = Regex::new("sys::[a-z]+::").unwrap();
-    text = from.replace_all(&text, "sys::PLATFORM::").to_string();
-    let from = Regex::new("sys/[a-z]+/").unwrap();
-    text = from.replace_all(&text, "sys/PLATFORM/").to_string();
+    let BACKTRACE_WHITESPACE = Regex::new(" +at (.*\\.rs)").unwrap();
+    text = BACKTRACE_WHITESPACE.replace_all(&text, " at $1").to_string();
+    let BACKTRACE_GENERICS = Regex::new("([0-9]+: .*)::<.*>").unwrap();
+    text = BACKTRACE_GENERICS.replace_all(&text, "$1").to_string();
+    let BACKTRACE_ADDRESSES = Regex::new("([0-9]+: ) +0x[0-9a-f]+ - (.*)").unwrap();
+    text = BACKTRACE_ADDRESSES.replace_all(&text, "$1$2").to_string();
+    let HEXADECIMALS = Regex::new("0x[0-9a-fA-F]+(\\[a[0-9]+\\])?").unwrap();
+    text = HEXADECIMALS.replace_all(&text, "$$HEX").to_string();
+    let VCLOCK = Regex::new("VClock\\(\\[[^\\]]+\\]\\)").unwrap();
+    text = VCLOCK.replace_all(&text, "VClock").to_string();
+    let ALIGNMENT = Regex::new("alignment [0-9]+").unwrap();
+    text = ALIGNMENT.replace_all(&text, "alignment ALIGN").to_string();
+    let CALL_ID = Regex::new("\\(call [0-9]+\\)").unwrap();
+    text = CALL_ID.replace_all(&text, "(call ID)").to_string();
+    let SYS_MOD_PATH = Regex::new("sys::[a-z]+::").unwrap();
+    text = SYS_MOD_PATH.replace_all(&text, "sys::PLATFORM::").to_string();
+    let SYS_FILE_PATH = Regex::new("sys/[a-z]+/").unwrap();
+    text = SYS_FILE_PATH.replace_all(&text, "sys/PLATFORM/").to_string();
 
     // strip error comments from output
-    let from = Regex::new("\\s*//~.*").unwrap();
-    text = from.replace_all(&text, "").to_string();
+    let ERROR_COMMENTS = Regex::new("\\s*//~.*").unwrap();
+    text = ERROR_COMMENTS.replace_all(&text, "").to_string();
 
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// normalize-stderr-test") {
