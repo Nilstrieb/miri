@@ -31,7 +31,9 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
         flags.push(sysroot);
     }
     if let Ok(extra_flags) = env::var("MIRIFLAGS") {
-        flags.push(extra_flags);
+        for flag in extra_flags.split_whitespace() {
+            flags.push(flag.to_string());
+        }
     }
     flags.push("-Zui-testing".to_string());
     flags.push("--target".to_string());
