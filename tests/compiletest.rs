@@ -353,11 +353,12 @@ regexes! {
     "\\(call [0-9]+\\)"              => "(call ID)",
     // erase platform module paths
     "sys::[a-z]+::"                  => "sys::PLATFORM::",
+    // Windows file paths
+    "\\\\"                           => "/",
+    // erase platform file paths
     "sys/[a-z]+/"                    => "sys/PLATFORM/",
     // erase error annotations in tests
     "\\s*//~.*"                      => "",
-    // Windows file paths
-    "\\\\"                           => "/",
 }
 
 fn normalize(path: &Path, text: &str) -> String {
