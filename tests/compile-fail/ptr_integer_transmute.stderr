@@ -1,8 +1,8 @@
-error: Undefined Behavior: type validation failed: encountered pointer to 0x27c44[ALLOC]<BORROW_IDX>, but expected initialized plain (non-pointer) bytes
+error: Undefined Behavior: type validation failed: encountered pointer to $HEX[ALLOC]<BORROW_IDX>, but expected initialized plain (non-pointer) bytes
   --> $DIR/ptr_integer_transmute.rs:LL:CC
    |
 LL |     let _i: usize = unsafe { std::mem::transmute(r) }; //~ ERROR expected initialized plain (non-pointer) bytes
-   |                              ^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered pointer to 0x27c44[ALLOC]<BORROW_IDX>, but expected initialized plain (non-pointer) bytes
+   |                              ^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered pointer to $HEX[ALLOC]<BORROW_IDX>, but expected initialized plain (non-pointer) bytes
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information

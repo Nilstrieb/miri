@@ -6,7 +6,7 @@ LL |     let _val = unsafe { *x }; //~ ERROR protect
    |
    = help: this indicates a potential bug in the program: it performed an invalid operation, but the rules it violated are still experimental
    = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
-help: tag was most recently created at offsets [0x0..0x4]
+help: tag was most recently created at offsets [$HEX..$HEX]
   --> $DIR/invalidate_against_barrier1.rs:LL:CC
    |
 LL |     let xraw = &mut x as *mut _;
