@@ -185,9 +185,25 @@ fn ignore_file(p: &Path, target: &str) -> bool {
             if target.contains(s) {
                 return true;
             }
+            if get_pointer_width(target).contains(s) {
+                return true;
+            }
         }
     }
     false
+}
+
+// Taken 1:1 from compiletest-rs
+fn get_pointer_width(triple: &str) -> &'static str {
+    if (triple.contains("64") && !triple.ends_with("gnux32") && !triple.ends_with("gnu_ilp32"))
+        || triple.starts_with("s390x")
+    {
+        "64bit"
+    } else if triple.starts_with("avr") {
+        "16bit"
+    } else {
+        "32bit"
+    }
 }
 
 fn extract_env(cmd: &mut Command, path: &Path) {
