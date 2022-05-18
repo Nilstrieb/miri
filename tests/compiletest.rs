@@ -79,7 +79,11 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     for revision in revisions(&path) {
                         match run_test(&path, &target, &flags, mode, &revision) {
                             Ok(()) => {}
-                            Err((p, o, m, eerr, eout, err, out)) => failures.lock().unwrap().push((p, o, m, eerr, eout, err, out, revision)),
+                            Err((p, o, m, eerr, eout, err, out)) =>
+                                failures
+                                    .lock()
+                                    .unwrap()
+                                    .push((p, o, m, eerr, eout, err, out, revision)),
                         }
                     }
                 }
@@ -92,7 +96,9 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     let total = total.load(Ordering::Relaxed);
     let skipped = skipped.load(Ordering::Relaxed);
     if !failures.is_empty() {
-        for (path, output, miri, expected_stderr, expected_stdout, stderr, stdout, revision) in &failures {
+        for (path, output, miri, expected_stderr, expected_stdout, stderr, stdout, revision) in
+            &failures
+        {
             eprintln!();
             eprint!("{} {}", path.display().to_string().underline(), "FAILED".red());
             if !revision.is_empty() {
@@ -183,7 +189,9 @@ fn run_test(
 fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool, revision: &str) {
     let content = std::fs::read_to_string(path).unwrap();
     let mut found_annotation = false;
-    let regex = Regex::new("//(\\[(?P<revision>[^\\]]+)\\])?~[\\^|]*\\s*(ERROR|HELP|WARN)?:?(?P<text>.*)").unwrap();
+    let regex =
+        Regex::new("//(\\[(?P<revision>[^\\]]+)\\])?~[\\^|]*\\s*(ERROR|HELP|WARN)?:?(?P<text>.*)")
+            .unwrap();
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// error-pattern:") {
             if !stderr.contains(s.trim()) {
