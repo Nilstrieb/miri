@@ -1,6 +1,6 @@
 use std::env;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, ExitStatus};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 
@@ -84,10 +84,7 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     extract_env(&mut miri, &path);
                     let output = miri.output().expect("could not execute miri");
 
-                    let mut ok = match (output.status.success(), mode) {
-                        (false, Mode::UB) | (false, Mode::Panic) | (true, Mode::Pass) => true,
-                        (true, Mode::Panic) | (true, Mode::UB) | (false, Mode::Pass) => false,
-                    };
+                    let mut ok = mode.ok(output.status);
 
                     // Check output files (if any)
                     let stderr = std::str::from_utf8(&output.stderr).unwrap();
@@ -275,6 +272,15 @@ enum Mode {
     Pass,
     Panic,
     UB,
+}
+
+impl Mode {
+    fn ok(self, status: ExitStatus) -> bool {
+        match (status.success(), self) {
+            (false, Mode::UB) | (false, Mode::Panic) | (true, Mode::Pass) => true,
+            (true, Mode::Panic) | (true, Mode::UB) | (false, Mode::Pass) => false,
+        }
+    }
 }
 
 fn main() {
