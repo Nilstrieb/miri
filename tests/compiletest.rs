@@ -359,6 +359,10 @@ fn normalize(path: &Path, text: &str) -> String {
     text = from.replace_all(&text, "alignment ALIGN").to_string();
     let from = Regex::new("\\(call [0-9]+\\)").unwrap();
     text = from.replace_all(&text, "(call ID)").to_string();
+    let from = Regex::new("sys::[a-z]+::").unwrap();
+    text = from.replace_all(&text, "sys::PLATFORM::").to_string();
+    let from = Regex::new("sys/[a-z]+/").unwrap();
+    text = from.replace_all(&text, "sys/PLATFORM/").to_string();
 
     // strip error comments from output
     let from = Regex::new("\\s*//~.*").unwrap();
