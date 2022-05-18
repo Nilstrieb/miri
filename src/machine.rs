@@ -580,7 +580,7 @@ impl<'mir, 'tcx> Machine<'mir, 'tcx> for Evaluator<'mir, 'tcx> {
         if let Some(&ptr) = ecx.machine.extern_statics.get(&link_name) {
             Ok(ptr)
         } else {
-            throw_unsup_format!("`extern` static {:?} is not supported by Miri", def_id)
+            throw_unsup_format!("`extern` static {} is not supported by Miri", ecx.tcx.def_path_str(def_id))
         }
     }
 
