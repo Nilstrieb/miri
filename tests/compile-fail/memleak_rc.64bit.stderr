@@ -1,6 +1,6 @@
 The following memory was leaked: ALLOC (Rust heap, size: 32, align: 8) {
-    $HEX │ 01 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 │ ................
-    $HEX │ 00 00 00 00 00 00 00 00 ╾$HEX<untagged> (8 ptr bytes)╼ │ ........╾──────╼
+$stripped$
+$stripped$
 }
 
 error: the evaluated program leaked memory
