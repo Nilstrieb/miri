@@ -1,6 +1,6 @@
 use std::env;
 use std::path::{Path, PathBuf};
-use std::process::{Command, ExitStatus};
+use std::process::{Command, ExitStatus, Output};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 
@@ -70,49 +70,15 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     } else {
                         continue;
                     }
-                    total.fetch_add(1, Ordering::Relaxed);
-                    // Read rules for skipping from file
+                    total.fetch_add(1, Ordering::Relaxed);    // Read rules for skipping from file
                     if ignore_file(&path, &target) {
                         skipped.fetch_add(1, Ordering::Relaxed);
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
                         continue;
                     }
-
-                    // Run miri
-                    let mut miri = Command::new(miri_path());
-                    miri.args(flags.iter());
-                    miri.arg(&path);
-                    miri.env("RUSTC_BACKTRACE", "0");
-                    extract_env(&mut miri, &path);
-                    let output = miri.output().expect("could not execute miri");
-
-                    let mut ok = mode.ok(output.status);
-
-                    // Check output files (if any)
-                    let (stderr, expected_stderr) = extract_output(&output.stderr, &path, &mut ok, "stderr", &target);
-                    let (stdout, expected_stdout) = extract_output(&output.stdout, &path, &mut ok, "stdout", &target);
-
-                    let require = match mode {
-                        Mode::Pass => false,
-                        Mode::Panic => false, // Should we do anything here?
-                        Mode::UB => true,
-                    };
-                    check_annotations(&path, &stderr, &mut ok, require);
-
-                    eprint!("{} .. ", path.display());
-                    if ok {
-                        eprintln!("{}", "ok".green());
-                    } else {
-                        eprintln!("{}", "FAILED".red().bold());
-                        failures.lock().unwrap().push((
-                            path,
-                            output,
-                            miri,
-                            expected_stderr,
-                            expected_stdout,
-                            stderr,
-                            stdout,
-                        ));
+                    match run_test(path, &target, &flags, mode) {
+                        Ok(()) => {},
+                        Err(failure) => failures.lock().unwrap().push(failure),
                     }
                 }
             });
@@ -143,6 +109,42 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
         (total - skipped).to_string().green(),
         skipped.to_string().yellow()
     );
+}
+
+fn run_test(path: PathBuf, target: &String, flags: &[String], mode: Mode) -> Result<(), (PathBuf, Output, Command, String, String, String, String)> {
+    // Run miri
+    let mut miri = Command::new(miri_path());
+    miri.args(flags.iter());
+    miri.arg(&path);
+    miri.env("RUSTC_BACKTRACE", "0");
+    extract_env(&mut miri, &path);
+    let output = miri.output().expect("could not execute miri");
+    let mut ok = mode.ok(output.status);
+    // Check output files (if any)
+    let (stderr, expected_stderr) = extract_output(&output.stderr, &path, &mut ok, "stderr", target);
+    let (stdout, expected_stdout) = extract_output(&output.stdout, &path, &mut ok, "stdout", target);
+    let require = match mode {
+        Mode::Pass => false,
+        Mode::Panic => false, // Should we do anything here?
+        Mode::UB => true,
+    };
+    check_annotations(&path, &stderr, &mut ok, require);
+    eprint!("{} .. ", path.display());
+    if ok {
+        eprintln!("{}", "ok".green());
+        Ok(())
+    } else {
+        eprintln!("{}", "FAILED".red().bold());
+        Err((
+            path,
+            output,
+            miri,
+            expected_stderr,
+            expected_stdout,
+            stderr,
+            stdout,
+        ))
+    }
 }
 
 fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool) {
