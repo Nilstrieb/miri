@@ -1,5 +1,5 @@
 The following memory was leaked: ALLOC (Rust heap, size: 16, align: 4) {
-    01 00 00 00 01 00 00 00 00 00 00 00 ╾$HEX[a1533]<untagged> (4 ptr bytes)╼ │ ............╾──╼
+    01 00 00 00 01 00 00 00 00 00 00 00 ╾$HEX<untagged> (4 ptr bytes)╼ │ ............╾──╼
 }
 
 error: the evaluated program leaked memory

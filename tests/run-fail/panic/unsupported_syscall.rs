@@ -1,5 +1,5 @@
 // ignore-windows: No libc on Windows
-// ignore-macos: `syscall` is not supported on macOS
+// ignore-apple: `syscall` is not supported on macOS
 // compile-flags: -Zmiri-panic-on-unsupported
 #![feature(rustc_private)]
 

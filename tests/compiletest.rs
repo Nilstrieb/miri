@@ -350,7 +350,7 @@ fn normalize(path: &Path, text: &str) -> String {
     text = from.replace_all(&text, "$1").to_string();
     let from = Regex::new("([0-9]+: ) +0x[0-9a-f]+ - (.*)").unwrap();
     text = from.replace_all(&text, "$1$2").to_string();
-    let from = Regex::new("0x[0-9a-fA-F]+").unwrap();
+    let from = Regex::new("0x[0-9a-fA-F]+(\\[a[0-9]+\\])?").unwrap();
     text = from.replace_all(&text, "$$HEX").to_string();
     //VClock([14, 0, 4]
     let from = Regex::new("VClock\\(\\[[^\\]]+\\]\\)").unwrap();
