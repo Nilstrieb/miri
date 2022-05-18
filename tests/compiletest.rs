@@ -239,7 +239,9 @@ fn extract_output(
         output.clone()
     } else {
         let expected_output = std::fs::read_to_string(path).unwrap_or_default();
-        *ok &= output == expected_output;
+        if env::var_os("MIRI_SKIP_UI_CHECKS").is_none() {
+            *ok &= output == expected_output;
+        }
         expected_output
     };
     (output, expected_output)

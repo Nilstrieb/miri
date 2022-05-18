@@ -89,6 +89,16 @@ MIRI_LOG=rustc_mir::interpret=info,miri::stacked_borrows ./miri run tests/run-pa
 In addition, you can set `MIRI_BACKTRACE=1` to get a backtrace of where an
 evaluation error was originally raised.
 
+#### UI testing
+
+We use ui-testing in miri, meaning we generate `.stderr` and `.stdout` files for the output
+produced by miri. You can use `./miri bless` to automatically (re)generate these files when
+you add new tests or change how miri presents certain output.
+
+Note that when you also use `MIRIFLAGS` to change optimizations and similar, the ui output
+will change in unexpected ways, so we ignore that output for now. In order to still be able
+to run the other checks, use `MIRI_SKIP_UI_CHECKS=1 ./miri test`.
+
 ### Testing `cargo miri`
 
 Working with the driver directly gives you full control, but you also lose all
