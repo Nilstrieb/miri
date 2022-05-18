@@ -141,6 +141,9 @@ fn run_test(
     let mut miri = Command::new(miri_path());
     miri.args(flags.iter());
     miri.arg(&path);
+    if !revision.is_empty() {
+        miri.arg(format!("--cfg={revision}"));
+    }
     miri.env("RUSTC_BACKTRACE", "0");
     extract_env(&mut miri, &path);
     let output = miri.output().expect("could not execute miri");
@@ -162,7 +165,7 @@ fn run_test(
         Mode::Panic => false, // Should we do anything here?
         Mode::UB => true,
     };
-    check_annotations(&path, &stderr, &mut ok, require);
+    check_annotations(&path, &stderr, &mut ok, require, revision);
     eprint!("{} .. ", path.display());
     if ok {
         eprintln!("{}", "ok".green());
@@ -177,10 +180,10 @@ fn run_test(
     }
 }
 
-fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool) {
+fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool, revision: &str) {
     let content = std::fs::read_to_string(path).unwrap();
     let mut found_annotation = false;
-    let regex = Regex::new("//~[\\^|]*\\s*(ERROR|HELP|WARN)?:?(.*)").unwrap();
+    let regex = Regex::new("//(\\[(?P<revision>[^\\]]+)\\])?~[\\^|]*\\s*(ERROR|HELP|WARN)?:?(?P<text>.*)").unwrap();
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// error-pattern:") {
             if !stderr.contains(s.trim()) {
@@ -190,7 +193,13 @@ fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool) {
         }
         if let Some(captures) = regex.captures(line) {
             // FIXME: check that the error happens on the marked line
-            let matched = captures.get(2).unwrap().as_str().trim();
+            let matched = captures["text"].trim();
+
+            if let Some(rev) = captures.name("revision") {
+                if rev.as_str() != revision {
+                    continue;
+                }
+            }
 
             if !stderr.contains(matched) {
                 *ok = false;
