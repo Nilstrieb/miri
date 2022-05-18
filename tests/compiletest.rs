@@ -91,11 +91,13 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     let skipped = skipped.load(Ordering::Relaxed);
     if !failures.is_empty() {
         for (path, output, miri, expected_stderr, expected_stdout, stderr, stdout) in &failures {
-            eprintln!("{} failed, {}", path.display(), output.status);
+            eprintln!();
+            eprintln!("{} {}, {}", path.display().to_string().underline(), "failed".red(), output.status);
             eprintln!("command: {:?}", miri);
             compare_output("stdout", path, stdout, expected_stdout);
             compare_output("stderr", path, stderr, expected_stderr);
         }
+        eprintln!();
         eprintln!(
             "{} tests failed, {} tests passed, {} skipped",
             failures.len().to_string().red().bold(),
@@ -104,6 +106,7 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
         );
         std::process::exit(1);
     }
+    eprintln!();
     eprintln!(
         "{} tests passed, {} skipped",
         (total - skipped).to_string().green(),
