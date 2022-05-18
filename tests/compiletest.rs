@@ -146,9 +146,19 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
 fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool) {
     let content = std::fs::read_to_string(path).unwrap();
     let mut found_annotation = false;
+    let regex = Regex::new("//~[\\^|]*\\s*(ERROR|HELP|WARN)?:?(.*)").unwrap();
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// error-pattern:") {
             if !stderr.contains(s.trim()) {
+                *ok = false;
+            }
+            found_annotation = true;
+        }
+        if let Some(captures) = regex.captures(line) {
+            // FIXME: check that the error happens on the marked line
+            let matched = captures.get(2).unwrap().as_str().trim();
+
+            if !stderr.contains(matched) {
                 *ok = false;
             }
             found_annotation = true;
