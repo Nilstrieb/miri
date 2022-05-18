@@ -76,9 +76,11 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
                         continue;
                     }
-                    match run_test(path, &target, &flags, mode) {
-                        Ok(()) => {}
-                        Err(failure) => failures.lock().unwrap().push(failure),
+                    for revision in revisions(&path) {
+                        match run_test(&path, &target, &flags, mode, &revision) {
+                            Ok(()) => {}
+                            Err((p, o, m, eerr, eout, err, out)) => failures.lock().unwrap().push((p, o, m, eerr, eout, err, out, revision)),
+                        }
                     }
                 }
             });
@@ -90,9 +92,13 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     let total = total.load(Ordering::Relaxed);
     let skipped = skipped.load(Ordering::Relaxed);
     if !failures.is_empty() {
-        for (path, output, miri, expected_stderr, expected_stdout, stderr, stdout) in &failures {
+        for (path, output, miri, expected_stderr, expected_stdout, stderr, stdout, revision) in &failures {
             eprintln!();
-            eprintln!("{} {}, {}", path.display().to_string().underline(), "failed".red(), output.status);
+            eprint!("{} {}", path.display().to_string().underline(), "FAILED".red());
+            if !revision.is_empty() {
+                eprint!(" (revision `{}`) ", revision);
+            }
+            eprintln!("{}", output.status);
             eprintln!("command: {:?}", miri);
             compare_output("stdout", path, stdout, expected_stdout);
             compare_output("stderr", path, stderr, expected_stderr);
@@ -114,11 +120,22 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     );
 }
 
+fn revisions(path: &Path) -> Vec<String> {
+    let content = std::fs::read_to_string(path).unwrap();
+    for line in content.lines() {
+        if let Some(revisions) = line.strip_prefix("// revisions:") {
+            return revisions.trim().split_whitespace().map(|s| s.to_string()).collect();
+        }
+    }
+    vec![String::new()]
+}
+
 fn run_test(
-    path: PathBuf,
-    target: &String,
+    path: &Path,
+    target: &str,
     flags: &[String],
     mode: Mode,
+    revision: &str,
 ) -> Result<(), (PathBuf, Output, Command, String, String, String, String)> {
     // Run miri
     let mut miri = Command::new(miri_path());
@@ -129,10 +146,17 @@ fn run_test(
     let output = miri.output().expect("could not execute miri");
     let mut ok = mode.ok(output.status);
     // Check output files (if any)
+    let revised = |extension: &str| {
+        if revision.is_empty() {
+            extension.to_string()
+        } else {
+            format!("{}.{}", revision, extension)
+        }
+    };
     let (stderr, expected_stderr) =
-        extract_output(&output.stderr, &path, &mut ok, "stderr", target);
+        extract_output(&output.stderr, path, &mut ok, revised("stderr"), target);
     let (stdout, expected_stdout) =
-        extract_output(&output.stdout, &path, &mut ok, "stdout", target);
+        extract_output(&output.stdout, path, &mut ok, revised("stdout"), target);
     let require = match mode {
         Mode::Pass => false,
         Mode::Panic => false, // Should we do anything here?
@@ -144,8 +168,12 @@ fn run_test(
         eprintln!("{}", "ok".green());
         Ok(())
     } else {
-        eprintln!("{}", "FAILED".red().bold());
-        Err((path, output, miri, expected_stderr, expected_stdout, stderr, stdout))
+        eprint!("{}", "FAILED".red().bold());
+        if !revision.is_empty() {
+            eprint!(" (revision `{}`)", revision);
+        }
+        eprintln!();
+        Err((path.to_path_buf(), output, miri, expected_stderr, expected_stdout, stderr, stdout))
     }
 }
 
@@ -177,9 +205,9 @@ fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool) {
 
 fn extract_output(
     output: &[u8],
-    path: &PathBuf,
+    path: &Path,
     ok: &mut bool,
-    kind: &str,
+    kind: String,
     target: &str,
 ) -> (String, String) {
     let output = std::str::from_utf8(&output).unwrap();
@@ -200,7 +228,7 @@ fn extract_output(
     (output, expected_output)
 }
 
-fn output_path(path: &Path, kind: &str, target: &str) -> PathBuf {
+fn output_path(path: &Path, kind: String, target: &str) -> PathBuf {
     let content = std::fs::read_to_string(path).unwrap();
     for line in content.lines() {
         if line.starts_with("// stderr-per-bitwidth") {
