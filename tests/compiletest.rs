@@ -90,7 +90,12 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     let (stderr, expected_stderr) = extract_output(&output.stderr, &path, &mut ok, "stderr", &target);
                     let (stdout, expected_stdout) = extract_output(&output.stdout, &path, &mut ok, "stdout", &target);
 
-                    check_annotations(&path, &stderr, &mut ok);
+                    let require = match mode {
+                        Mode::Pass => false,
+                        Mode::Panic => false, // Should we do anything here?
+                        Mode::UB => true,
+                    };
+                    check_annotations(&path, &stderr, &mut ok, require);
 
                     eprint!("{} .. ", path.display());
                     if ok {
@@ -138,14 +143,19 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     );
 }
 
-fn check_annotations(path: &Path, stderr: &str, ok: &mut bool) {
+fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool) {
     let content = std::fs::read_to_string(path).unwrap();
+    let mut found_annotation = false;
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// error-pattern:") {
             if !stderr.contains(s.trim()) {
                 *ok = false;
             }
+            found_annotation = true;
         }
+    }
+    if found_annotation != require {
+        *ok = false;
     }
 }
 
