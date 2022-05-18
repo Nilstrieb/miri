@@ -87,39 +87,8 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     let mut ok = mode.ok(output.status);
 
                     // Check output files (if any)
-                    let stderr = std::str::from_utf8(&output.stderr).unwrap();
-                    let stderr = normalize(&path, stderr);
-                    let expected_stderr = if let Ok(_) = env::var("MIRI_BLESS") {
-                        if stderr.is_empty() {
-                            let _ = std::fs::remove_file(path.with_extension("stderr"));
-                        } else {
-                            std::fs::write(path.with_extension("stderr"), &stderr).unwrap();
-                        }
-                        stderr.clone()
-                    } else {
-                        let expected_stderr =
-                            std::fs::read_to_string(path.with_extension("stderr"))
-                                .unwrap_or_default();
-                        ok &= stderr == expected_stderr;
-                        expected_stderr
-                    };
-
-                    let stdout = std::str::from_utf8(&output.stdout).unwrap();
-                    let stdout = normalize(&path, stdout);
-                    let expected_stdout = if let Ok(_) = env::var("MIRI_BLESS") {
-                        if stdout.is_empty() {
-                            let _ = std::fs::remove_file(path.with_extension("stdout"));
-                        } else {
-                            std::fs::write(path.with_extension("stdout"), &stdout).unwrap();
-                        }
-                        stdout.clone()
-                    } else {
-                        let expected_stdout =
-                            std::fs::read_to_string(path.with_extension("stdout"))
-                                .unwrap_or_default();
-                        ok &= stdout == expected_stdout;
-                        expected_stdout
-                    };
+                    let (stderr, expected_stderr) = extract_output(&output.stderr, &path, &mut ok, "stderr");
+                    let (stdout, expected_stdout) = extract_output(&output.stdout, &path, &mut ok, "stdout");
 
                     eprint!("{} .. ", path.display());
                     if ok {
@@ -165,6 +134,31 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
         (total - skipped).to_string().green(),
         skipped.to_string().yellow()
     );
+}
+
+fn extract_output(output: &[u8], path: &PathBuf, ok: &mut bool, kind: &str) -> (String, String) {
+    let output = std::str::from_utf8(&output).unwrap();
+    let output = normalize(path, output);
+    let path = output_path(path, kind);
+    let expected_output = if let Ok(_) = env::var("MIRI_BLESS") {
+        if output.is_empty() {
+            let _ = std::fs::remove_file(path);
+        } else {
+            std::fs::write(path, &output).unwrap();
+        }
+        output.clone()
+    } else {
+        let expected_output =
+            std::fs::read_to_string(path)
+                .unwrap_or_default();
+        *ok &= output == expected_output;
+        expected_output
+    };
+    (output, expected_output)
+}
+
+fn output_path(path: &Path, kind: &str) -> PathBuf {
+    path.with_extension(kind)
 }
 
 fn compare_output(kind: &str, path: &Path, actual: &str, expected: &str) {
