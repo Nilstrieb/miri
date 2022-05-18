@@ -230,7 +230,7 @@ fn extract_output(
     let output = std::str::from_utf8(&output).unwrap();
     let output = normalize(path, output);
     let path = output_path(path, kind, target);
-    let expected_output = if let Ok(_) = env::var("MIRI_BLESS") {
+    let expected_output = if env::var_os("MIRI_BLESS").is_some() {
         if output.is_empty() {
             let _ = std::fs::remove_file(path);
         } else {
