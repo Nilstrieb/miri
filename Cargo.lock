@@ -269,6 +269,7 @@ dependencies = [
  "crossbeam",
  "env_logger",
  "getrandom",
+ "lazy_static",
  "libc",
  "log",
  "measureme",

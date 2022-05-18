@@ -322,6 +322,22 @@ fn extract_env(cmd: &mut Command, path: &Path) {
     }
 }
 
+lazy_static::lazy_static! {
+    static ref LINE_COL: (Regex, &'static str) = (Regex::new("\\.rs:[0-9]+:[0-9]+").unwrap(), ".rs:LL:CC");
+    static ref ALLOC_IDS: (Regex, &'static str) = (Regex::new("alloc[0-9]+").unwrap(), "ALLOC");
+    static ref BORROW_IDX: (Regex, &'static str) = (Regex::new("<[0-9]+>").unwrap(), "<BORROW_IDX>");
+    static ref BACKTRACE_WHITESPACE: (Regex, &'static str) = (Regex::new(" +at (.*\\.rs)").unwrap(), " at $1");
+    static ref BACKTRACE_GENERICS: (Regex, &'static str) = (Regex::new("([0-9]+: .*)::<.*>").unwrap(), "$1");
+    static ref BACKTRACE_ADDRESSES: (Regex, &'static str) = (Regex::new("([0-9]+: ) +0x[0-9a-f]+ - (.*)").unwrap(), "$1$2");
+    static ref HEXADECIMALS: (Regex, &'static str) = (Regex::new("0x[0-9a-fA-F]+(\\[a[0-9]+\\])?").unwrap(), "$$HEX");
+    static ref VCLOCK: (Regex, &'static str) = (Regex::new("VClock\\(\\[[^\\]]+\\]\\)").unwrap(), "VClock");
+    static ref ALIGNMENT: (Regex, &'static str) = (Regex::new("alignment [0-9]+").unwrap(), "alignment ALIGN");
+    static ref CALL_ID: (Regex, &'static str) = (Regex::new("\\(call [0-9]+\\)").unwrap(), "(call ID)");
+    static ref SYS_MOD_PATH: (Regex, &'static str) = (Regex::new("sys::[a-z]+::").unwrap(), "sys::PLATFORM::");
+    static ref SYS_FILE_PATH: (Regex, &'static str) = (Regex::new("sys/[a-z]+/").unwrap(), "sys/PLATFORM/");
+    static ref ERROR_COMMENTS: (Regex, &'static str) = (Regex::new("\\s*//~.*").unwrap(), "");
+}
+
 fn normalize(path: &Path, text: &str) -> String {
     let content = std::fs::read_to_string(path).unwrap();
 
@@ -331,42 +347,26 @@ fn normalize(path: &Path, text: &str) -> String {
         text = text.replace(lib_path, "RUSTLIB");
     }
 
-    // Line endings
-    let LINE_COL = Regex::new("\\.rs:[0-9]+:[0-9]+").unwrap();
-    text = LINE_COL.replace_all(&text, ".rs:LL:CC").to_string();
+    let regexes = &[
+        &*LINE_COL,
+        &*ALLOC_IDS,
+        &*BORROW_IDX,
+        &*BACKTRACE_WHITESPACE,
+        &*BACKTRACE_GENERICS,
+        &*BACKTRACE_ADDRESSES,
+        &*HEXADECIMALS,
+        &*VCLOCK,
+        &*ALIGNMENT,
+        &*CALL_ID,
+        &*SYS_MOD_PATH,
+        &*SYS_FILE_PATH,
+        &*ERROR_COMMENTS,
+    ];
 
-    // alloc ids
-    let ALLOC_IDS = Regex::new("alloc[0-9]+").unwrap();
-    text = ALLOC_IDS.replace_all(&text, "ALLOC").to_string();
-
-    // borrow stack indices
-    let BORROW_IDX = Regex::new("<[0-9]+>").unwrap();
-    text = BORROW_IDX.replace_all(&text, "<BORROW_IDX>").to_string();
-
-    // backtrace noise
-    let BACKTRACE_WHITESPACE = Regex::new(" +at (.*\\.rs)").unwrap();
-    text = BACKTRACE_WHITESPACE.replace_all(&text, " at $1").to_string();
-    let BACKTRACE_GENERICS = Regex::new("([0-9]+: .*)::<.*>").unwrap();
-    text = BACKTRACE_GENERICS.replace_all(&text, "$1").to_string();
-    let BACKTRACE_ADDRESSES = Regex::new("([0-9]+: ) +0x[0-9a-f]+ - (.*)").unwrap();
-    text = BACKTRACE_ADDRESSES.replace_all(&text, "$1$2").to_string();
-    let HEXADECIMALS = Regex::new("0x[0-9a-fA-F]+(\\[a[0-9]+\\])?").unwrap();
-    text = HEXADECIMALS.replace_all(&text, "$$HEX").to_string();
-    let VCLOCK = Regex::new("VClock\\(\\[[^\\]]+\\]\\)").unwrap();
-    text = VCLOCK.replace_all(&text, "VClock").to_string();
-    let ALIGNMENT = Regex::new("alignment [0-9]+").unwrap();
-    text = ALIGNMENT.replace_all(&text, "alignment ALIGN").to_string();
-    let CALL_ID = Regex::new("\\(call [0-9]+\\)").unwrap();
-    text = CALL_ID.replace_all(&text, "(call ID)").to_string();
-    let SYS_MOD_PATH = Regex::new("sys::[a-z]+::").unwrap();
-    text = SYS_MOD_PATH.replace_all(&text, "sys::PLATFORM::").to_string();
-    let SYS_FILE_PATH = Regex::new("sys/[a-z]+/").unwrap();
-    text = SYS_FILE_PATH.replace_all(&text, "sys/PLATFORM/").to_string();
-
-    // strip error comments from output
-    let ERROR_COMMENTS = Regex::new("\\s*//~.*").unwrap();
-    text = ERROR_COMMENTS.replace_all(&text, "").to_string();
-
+    for (regex, replacement) in regexes {
+        text = regex.replace_all(&text, *replacement).to_string();
+    }
+    
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// normalize-stderr-test") {
             let (from, to) = s.split_once("->").expect("normalize-stderr-test needs a `->`");

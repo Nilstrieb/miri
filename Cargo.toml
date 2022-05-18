@@ -43,6 +43,7 @@ regex = "1.5.5"
 pretty_assertions = "1.2.1"
 crossbeam = "0.8.1"
 num_cpus = "1.13.1"
+lazy_static = "1.4.0"
 
 [package.metadata.rust-analyzer]
 # This crate uses #[feature(rustc_private)].
