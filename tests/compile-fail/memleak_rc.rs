@@ -1,4 +1,4 @@
-//error-pattern: the evaluated program leaked memory
+// error-pattern: the evaluated program leaked memory
 // stderr-per-bitwidth
 
 use std::rc::Rc;

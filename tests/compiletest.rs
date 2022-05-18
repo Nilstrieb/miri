@@ -90,6 +90,8 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     let (stderr, expected_stderr) = extract_output(&output.stderr, &path, &mut ok, "stderr", &target);
                     let (stdout, expected_stdout) = extract_output(&output.stdout, &path, &mut ok, "stdout", &target);
 
+                    check_annotations(&path, &stderr, &mut ok);
+
                     eprint!("{} .. ", path.display());
                     if ok {
                         eprintln!("{}", "ok".green());
@@ -134,6 +136,17 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
         (total - skipped).to_string().green(),
         skipped.to_string().yellow()
     );
+}
+
+fn check_annotations(path: &Path, stderr: &str, ok: &mut bool) {
+    let content = std::fs::read_to_string(path).unwrap();
+    for line in content.lines() {
+        if let Some(s) = line.strip_prefix("// error-pattern:") {
+            if !stderr.contains(s.trim()) {
+                *ok = false;
+            }
+        }
+    }
 }
 
 fn extract_output(output: &[u8], path: &PathBuf, ok: &mut bool, kind: &str, target: &str) -> (String, String) {
