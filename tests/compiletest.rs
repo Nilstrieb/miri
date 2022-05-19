@@ -117,10 +117,13 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
             for error in errors {
                 match error {
                     Error::ExitStatus(mode, exit_status) => eprintln!("{mode:?} got {exit_status}"),
-                    Error::PatternNotFound(pat) =>
-                        eprintln!("error-pattern `{pat}` not found in stderr output"),
-                    Error::InlinePatternNotFound(pat) =>
-                        eprintln!("`{pat}` not found in stderr output"),
+                    Error::PatternNotFound { pattern, definition_line } => {
+                        eprintln!("`{pattern}` not found in stderr output");
+                        eprintln!(
+                            "expected because of pattern here: {}:{definition_line}",
+                            path.display()
+                        );
+                    }
                     Error::NoPatternsFound => eprintln!("no error patterns found in failure test"),
                     Error::OutputDiffers { path, actual, expected } =>
                         compare_output(path, actual, expected),
@@ -148,8 +151,10 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
 enum Error {
     /// Got an invalid exit status for the given mode.
     ExitStatus(Mode, ExitStatus),
-    PatternNotFound(String),
-    InlinePatternNotFound(String),
+    PatternNotFound {
+        pattern: String,
+        definition_line: usize,
+    },
     NoPatternsFound,
     OutputDiffers {
         path: PathBuf,
@@ -219,11 +224,11 @@ fn check_annotations(
     let regex =
         Regex::new("//(\\[(?P<revision>[^\\]]+)\\])?~[\\^|]*\\s*(ERROR|HELP|WARN)?:?(?P<text>.*)")
             .unwrap();
-    for line in content.lines() {
+    for (i, line) in content.lines().enumerate() {
         if let Some(s) = line.strip_prefix("// error-pattern:") {
             let s = s.trim();
             if !stderr.contains(s) {
-                errors.push(Error::PatternNotFound(s.to_string()));
+                errors.push(Error::PatternNotFound { pattern: s.to_string(), definition_line: i });
             }
             found_annotation = true;
         }
@@ -238,7 +243,10 @@ fn check_annotations(
             }
 
             if !stderr.contains(matched) {
-                errors.push(Error::InlinePatternNotFound(matched.to_string()));
+                errors.push(Error::PatternNotFound {
+                    pattern: matched.to_string(),
+                    definition_line: i,
+                });
             }
             found_annotation = true;
         }
