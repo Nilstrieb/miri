@@ -82,7 +82,7 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                         continue;
                     }
                     for revision in revisions(&path) {
-                        let (p, o, m, eerr, eout, err, out, errors) =
+                        let (o, m, eerr, eout, err, out, errors) =
                             run_test(&path, &target, &flags, mode, &revision);
 
                         eprint!("{} .. ", path.display());
@@ -94,10 +94,17 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                                 eprint!(" (revision `{}`)", revision);
                             }
                             eprintln!();
-                            failures
-                                .lock()
-                                .unwrap()
-                                .push((p, o, m, eerr, eout, err, out, revision, errors));
+                            failures.lock().unwrap().push((
+                                path.clone(),
+                                o,
+                                m,
+                                eerr,
+                                eout,
+                                err,
+                                out,
+                                revision,
+                                errors,
+                            ));
                         }
                     }
                 }
@@ -182,16 +189,16 @@ fn run_test(
     flags: &[String],
     mode: Mode,
     revision: &str,
-) -> (PathBuf, Output, Command, String, String, String, String, Errors) {
+) -> (Output, Command, String, String, String, String, Errors) {
     // Run miri
     let mut miri = Command::new(miri_path());
     miri.args(flags.iter());
-    miri.arg(&path);
+    miri.arg(path);
     if !revision.is_empty() {
         miri.arg(format!("--cfg={revision}"));
     }
     miri.env("RUSTC_BACKTRACE", "0");
-    extract_env(&mut miri, &path);
+    extract_env(&mut miri, path);
     let output = miri.output().expect("could not execute miri");
     let mut errors = mode.ok(output.status);
     // Check output files (if any)
@@ -211,8 +218,8 @@ fn run_test(
         Mode::Panic => false, // Should we do anything here?
         Mode::UB => true,
     };
-    check_annotations(&path, &stderr, &mut errors, require, revision);
-    (path.to_path_buf(), output, miri, expected_stderr, expected_stdout, stderr, stdout, errors)
+    check_annotations(path, &stderr, &mut errors, require, revision);
+    (output, miri, expected_stderr, expected_stdout, stderr, stdout, errors)
 }
 
 fn check_annotations(
