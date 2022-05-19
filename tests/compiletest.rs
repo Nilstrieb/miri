@@ -128,9 +128,9 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     Error::OutputDiffers { path, actual, expected } =>
                         compare_output(path, actual, expected),
                 }
+                eprintln!();
             }
         }
-        eprintln!();
         eprintln!(
             "{} tests failed, {} tests passed, {} skipped",
             failures.len().to_string().red().bold(),
