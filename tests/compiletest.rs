@@ -82,13 +82,22 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                         continue;
                     }
                     for revision in revisions(&path) {
-                        match run_test(&path, &target, &flags, mode, &revision) {
-                            Ok(()) => {}
-                            Err((p, o, m, eerr, eout, err, out, errors)) =>
-                                failures
-                                    .lock()
-                                    .unwrap()
-                                    .push((p, o, m, eerr, eout, err, out, revision, errors)),
+                        let (p, o, m, eerr, eout, err, out, errors) =
+                            run_test(&path, &target, &flags, mode, &revision);
+
+                        eprint!("{} .. ", path.display());
+                        if errors.is_empty() {
+                            eprintln!("{}", "ok".green());
+                        } else {
+                            eprint!("{}", "FAILED".red().bold());
+                            if !revision.is_empty() {
+                                eprint!(" (revision `{}`)", revision);
+                            }
+                            eprintln!();
+                            failures
+                                .lock()
+                                .unwrap()
+                                .push((p, o, m, eerr, eout, err, out, revision, errors));
                         }
                     }
                 }
@@ -173,7 +182,7 @@ fn run_test(
     flags: &[String],
     mode: Mode,
     revision: &str,
-) -> Result<(), (PathBuf, Output, Command, String, String, String, String, Errors)> {
+) -> (PathBuf, Output, Command, String, String, String, String, Errors) {
     // Run miri
     let mut miri = Command::new(miri_path());
     miri.args(flags.iter());
@@ -203,27 +212,7 @@ fn run_test(
         Mode::UB => true,
     };
     check_annotations(&path, &stderr, &mut errors, require, revision);
-    eprint!("{} .. ", path.display());
-    if errors.is_empty() {
-        eprintln!("{}", "ok".green());
-        Ok(())
-    } else {
-        eprint!("{}", "FAILED".red().bold());
-        if !revision.is_empty() {
-            eprint!(" (revision `{}`)", revision);
-        }
-        eprintln!();
-        Err((
-            path.to_path_buf(),
-            output,
-            miri,
-            expected_stderr,
-            expected_stdout,
-            stderr,
-            stdout,
-            errors,
-        ))
-    }
+    (path.to_path_buf(), output, miri, expected_stderr, expected_stdout, stderr, stdout, errors)
 }
 
 fn check_annotations(
