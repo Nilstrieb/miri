@@ -14,6 +14,11 @@ fn miri_path() -> PathBuf {
 
 fn run_tests(mode: Mode, path: &str, target: &str) {
     let in_rustc_test_suite = option_env!("RUSTC_STAGE").is_some();
+
+    if in_rustc_test_suite {
+        std::env::set_var("MIRI_SKIP_UI_CHECKS", "1");
+    }
+
     // Add some flags we always want.
     let mut flags = Vec::new();
     flags.push("--edition".to_owned());
