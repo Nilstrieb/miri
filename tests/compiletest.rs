@@ -84,11 +84,11 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                     for revision in revisions(&path) {
                         match run_test(&path, &target, &flags, mode, &revision) {
                             Ok(()) => {}
-                            Err((p, o, m, eerr, eout, err, out)) =>
+                            Err((p, o, m, eerr, eout, err, out, errors)) =>
                                 failures
                                     .lock()
                                     .unwrap()
-                                    .push((p, o, m, eerr, eout, err, out, revision)),
+                                    .push((p, o, m, eerr, eout, err, out, revision, errors)),
                         }
                     }
                 }
@@ -101,8 +101,17 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     let total = total.load(Ordering::Relaxed);
     let skipped = skipped.load(Ordering::Relaxed);
     if !failures.is_empty() {
-        for (path, output, miri, expected_stderr, expected_stdout, stderr, stdout, revision) in
-            &failures
+        for (
+            path,
+            output,
+            miri,
+            expected_stderr,
+            expected_stdout,
+            stderr,
+            stdout,
+            revision,
+            errors,
+        ) in &failures
         {
             eprintln!();
             eprint!("{} {}", path.display().to_string().underline(), "FAILED".red());
@@ -113,6 +122,7 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
             eprintln!("command: {:?}", miri);
             compare_output("stdout", path, stdout, expected_stdout);
             compare_output("stderr", path, stderr, expected_stderr);
+            eprintln!("{:#?}", errors);
         }
         eprintln!();
         eprintln!(
@@ -131,6 +141,22 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     );
 }
 
+#[derive(Debug)]
+enum Error {
+    /// Got an invalid exit status for the given mode.
+    ExitStatus(Mode, ExitStatus),
+    PatternNotFound(String),
+    InlinePatternNotFound(String),
+    NoPatternsFound,
+    OutputDiffers {
+        path: PathBuf,
+        actual: String,
+        expected: String,
+    },
+}
+
+type Errors = Vec<Error>;
+
 fn revisions(path: &Path) -> Vec<String> {
     let content = std::fs::read_to_string(path).unwrap();
     for line in content.lines() {
@@ -147,7 +173,7 @@ fn run_test(
     flags: &[String],
     mode: Mode,
     revision: &str,
-) -> Result<(), (PathBuf, Output, Command, String, String, String, String)> {
+) -> Result<(), (PathBuf, Output, Command, String, String, String, String, Errors)> {
     // Run miri
     let mut miri = Command::new(miri_path());
     miri.args(flags.iter());
@@ -158,7 +184,7 @@ fn run_test(
     miri.env("RUSTC_BACKTRACE", "0");
     extract_env(&mut miri, &path);
     let output = miri.output().expect("could not execute miri");
-    let mut ok = mode.ok(output.status);
+    let mut errors = mode.ok(output.status);
     // Check output files (if any)
     let revised = |extension: &str| {
         if revision.is_empty() {
@@ -168,17 +194,17 @@ fn run_test(
         }
     };
     let (stderr, expected_stderr) =
-        extract_output(&output.stderr, path, &mut ok, revised("stderr"), target);
+        extract_output(&output.stderr, path, &mut errors, revised("stderr"), target);
     let (stdout, expected_stdout) =
-        extract_output(&output.stdout, path, &mut ok, revised("stdout"), target);
+        extract_output(&output.stdout, path, &mut errors, revised("stdout"), target);
     let require = match mode {
         Mode::Pass => false,
         Mode::Panic => false, // Should we do anything here?
         Mode::UB => true,
     };
-    check_annotations(&path, &stderr, &mut ok, require, revision);
+    check_annotations(&path, &stderr, &mut errors, require, revision);
     eprint!("{} .. ", path.display());
-    if ok {
+    if errors.is_empty() {
         eprintln!("{}", "ok".green());
         Ok(())
     } else {
@@ -187,11 +213,26 @@ fn run_test(
             eprint!(" (revision `{}`)", revision);
         }
         eprintln!();
-        Err((path.to_path_buf(), output, miri, expected_stderr, expected_stdout, stderr, stdout))
+        Err((
+            path.to_path_buf(),
+            output,
+            miri,
+            expected_stderr,
+            expected_stdout,
+            stderr,
+            stdout,
+            errors,
+        ))
     }
 }
 
-fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool, revision: &str) {
+fn check_annotations(
+    path: &Path,
+    stderr: &str,
+    errors: &mut Errors,
+    require: bool,
+    revision: &str,
+) {
     let content = std::fs::read_to_string(path).unwrap();
     let mut found_annotation = false;
     let regex =
@@ -199,8 +240,9 @@ fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool, re
             .unwrap();
     for line in content.lines() {
         if let Some(s) = line.strip_prefix("// error-pattern:") {
-            if !stderr.contains(s.trim()) {
-                *ok = false;
+            let s = s.trim();
+            if !stderr.contains(s) {
+                errors.push(Error::PatternNotFound(s.to_string()));
             }
             found_annotation = true;
         }
@@ -215,20 +257,20 @@ fn check_annotations(path: &Path, stderr: &str, ok: &mut bool, require: bool, re
             }
 
             if !stderr.contains(matched) {
-                *ok = false;
+                errors.push(Error::InlinePatternNotFound(matched.to_string()));
             }
             found_annotation = true;
         }
     }
     if found_annotation != require {
-        *ok = false;
+        errors.push(Error::NoPatternsFound);
     }
 }
 
 fn extract_output(
     output: &[u8],
     path: &Path,
-    ok: &mut bool,
+    errors: &mut Errors,
     kind: String,
     target: &str,
 ) -> (String, String) {
@@ -243,9 +285,15 @@ fn extract_output(
         }
         output.clone()
     } else {
-        let expected_output = std::fs::read_to_string(path).unwrap_or_default();
+        let expected_output = std::fs::read_to_string(&path).unwrap_or_default();
         if env::var_os("MIRI_SKIP_UI_CHECKS").is_none() {
-            *ok &= output == expected_output;
+            if output != expected_output {
+                errors.push(Error::OutputDiffers {
+                    path,
+                    actual: output.clone(),
+                    expected: expected_output.clone(),
+                });
+            }
         }
         expected_output
     };
@@ -413,7 +461,7 @@ fn get_target() -> String {
     env::var("MIRI_TEST_TARGET").unwrap_or_else(|_| get_host())
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 enum Mode {
     Pass,
     Panic,
@@ -421,10 +469,11 @@ enum Mode {
 }
 
 impl Mode {
-    fn ok(self, status: ExitStatus) -> bool {
+    fn ok(self, status: ExitStatus) -> Errors {
         match (status.success(), self) {
-            (false, Mode::UB) | (false, Mode::Panic) | (true, Mode::Pass) => true,
-            (true, Mode::Panic) | (true, Mode::UB) | (false, Mode::Pass) => false,
+            (false, Mode::UB) | (false, Mode::Panic) | (true, Mode::Pass) => vec![],
+            (true, Mode::Panic) | (true, Mode::UB) | (false, Mode::Pass) =>
+                vec![Error::ExitStatus(self, status)],
         }
     }
 }
