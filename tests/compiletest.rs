@@ -1,6 +1,6 @@
 use std::env;
 use std::path::{Path, PathBuf};
-use std::process::{Command, ExitStatus, Output};
+use std::process::{Command, ExitStatus};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 
@@ -82,8 +82,7 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                         continue;
                     }
                     for revision in revisions(&path) {
-                        let (o, m, eerr, eout, err, out, errors) =
-                            run_test(&path, &target, &flags, mode, &revision);
+                        let (m, errors) = run_test(&path, &target, &flags, mode, &revision);
 
                         eprint!("{} .. ", path.display());
                         if errors.is_empty() {
@@ -94,17 +93,7 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
                                 eprint!(" (revision `{}`)", revision);
                             }
                             eprintln!();
-                            failures.lock().unwrap().push((
-                                path.clone(),
-                                o,
-                                m,
-                                eerr,
-                                eout,
-                                err,
-                                out,
-                                revision,
-                                errors,
-                            ));
+                            failures.lock().unwrap().push((path.clone(), m, revision, errors));
                         }
                     }
                 }
@@ -117,28 +106,26 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     let total = total.load(Ordering::Relaxed);
     let skipped = skipped.load(Ordering::Relaxed);
     if !failures.is_empty() {
-        for (
-            path,
-            output,
-            miri,
-            expected_stderr,
-            expected_stdout,
-            stderr,
-            stdout,
-            revision,
-            errors,
-        ) in &failures
-        {
+        for (path, miri, revision, errors) in &failures {
             eprintln!();
             eprint!("{} {}", path.display().to_string().underline(), "FAILED".red());
             if !revision.is_empty() {
                 eprint!(" (revision `{}`) ", revision);
             }
-            eprintln!("{}", output.status);
+            eprintln!();
             eprintln!("command: {:?}", miri);
-            compare_output("stdout", path, stdout, expected_stdout);
-            compare_output("stderr", path, stderr, expected_stderr);
-            eprintln!("{:#?}", errors);
+            for error in errors {
+                match error {
+                    Error::ExitStatus(mode, exit_status) => eprintln!("{mode:?} got {exit_status}"),
+                    Error::PatternNotFound(pat) =>
+                        eprintln!("error-pattern `{pat}` not found in stderr output"),
+                    Error::InlinePatternNotFound(pat) =>
+                        eprintln!("`{pat}` not found in stderr output"),
+                    Error::NoPatternsFound => eprintln!("no error patterns found in failure test"),
+                    Error::OutputDiffers { path, actual, expected } =>
+                        compare_output(path, actual, expected),
+                }
+            }
         }
         eprintln!();
         eprintln!(
@@ -189,7 +176,7 @@ fn run_test(
     flags: &[String],
     mode: Mode,
     revision: &str,
-) -> (Output, Command, String, String, String, String, Errors) {
+) -> (Command, Errors) {
     // Run miri
     let mut miri = Command::new(miri_path());
     miri.args(flags.iter());
@@ -209,17 +196,15 @@ fn run_test(
             format!("{}.{}", revision, extension)
         }
     };
-    let (stderr, expected_stderr) =
-        extract_output(&output.stderr, path, &mut errors, revised("stderr"), target);
-    let (stdout, expected_stdout) =
-        extract_output(&output.stdout, path, &mut errors, revised("stdout"), target);
+    let stderr = check_output(&output.stderr, path, &mut errors, revised("stderr"), target);
+    check_output(&output.stdout, path, &mut errors, revised("stdout"), target);
     let require = match mode {
         Mode::Pass => false,
         Mode::Panic => false, // Should we do anything here?
         Mode::UB => true,
     };
     check_annotations(path, &stderr, &mut errors, require, revision);
-    (output, miri, expected_stderr, expected_stdout, stderr, stdout, errors)
+    (miri, errors)
 }
 
 fn check_annotations(
@@ -263,23 +248,22 @@ fn check_annotations(
     }
 }
 
-fn extract_output(
+fn check_output(
     output: &[u8],
     path: &Path,
     errors: &mut Errors,
     kind: String,
     target: &str,
-) -> (String, String) {
+) -> String {
     let output = std::str::from_utf8(&output).unwrap();
     let output = normalize(path, output);
     let path = output_path(path, kind, target);
-    let expected_output = if env::var_os("MIRI_BLESS").is_some() {
+    if env::var_os("MIRI_BLESS").is_some() {
         if output.is_empty() {
             let _ = std::fs::remove_file(path);
         } else {
             std::fs::write(path, &output).unwrap();
         }
-        output.clone()
     } else {
         let expected_output = std::fs::read_to_string(&path).unwrap_or_default();
         if env::var_os("MIRI_SKIP_UI_CHECKS").is_none() {
@@ -287,13 +271,12 @@ fn extract_output(
                 errors.push(Error::OutputDiffers {
                     path,
                     actual: output.clone(),
-                    expected: expected_output.clone(),
+                    expected: expected_output,
                 });
             }
         }
-        expected_output
-    };
-    (output, expected_output)
+    }
+    output
 }
 
 fn output_path(path: &Path, kind: String, target: &str) -> PathBuf {
@@ -306,11 +289,11 @@ fn output_path(path: &Path, kind: String, target: &str) -> PathBuf {
     path.with_extension(kind)
 }
 
-fn compare_output(kind: &str, path: &Path, actual: &str, expected: &str) {
+fn compare_output(path: &Path, actual: &str, expected: &str) {
     if actual == expected {
         return;
     }
-    eprintln!("{kind} differed from expected {}", path.with_extension(kind).display());
+    eprintln!("actual output differed from expected {}", path.display());
     eprintln!("{}", pretty_assertions::StrComparison::new(expected, actual));
     eprintln!()
 }
