@@ -402,8 +402,11 @@ impl Config {
 
 #[derive(Copy, Clone, Debug)]
 pub enum Mode {
+    // The test passes a full execution of the rustc driver
     Pass,
+    // The rustc driver panicked
     Panic,
+    // The rustc driver emitted an error
     Fail,
 }
 
