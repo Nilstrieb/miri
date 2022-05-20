@@ -461,7 +461,7 @@ path = "lib.rs"
     command.env_remove("RUSTFLAGS");
     // Disable debug assertions in the standard library -- Miri is already slow enough.
     // But keep the overflow checks, they are cheap.
-    // Also remap the current directory to something that is reliably across different
+    // Also remap the current directory to something that is stable across different
     // machines. Otherwise ui output would contain the current directory.
     command.env(
         "RUSTFLAGS",
