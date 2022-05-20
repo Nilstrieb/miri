@@ -66,6 +66,8 @@ macro_rules! regexes {
 
 regexes! {
     STDOUT:
+    // Windows file paths
+    r"\\"                           => "/",
 }
 
 regexes! {
