@@ -113,6 +113,7 @@ pub fn run_tests(config: Config) {
                         );
                     }
                     Error::NoPatternsFound => eprintln!("{}", "no error patterns found in failure test".red()),
+                    Error::PatternFoundInPassTest => eprintln!("{}", "error pattern found in success test".red()),
                     Error::OutputDiffers { path, actual, expected } =>
                         compare_output(path, actual, expected),
                 }
@@ -145,6 +146,8 @@ enum Error {
     },
     /// A ui test checking for failure does not have any failure patterns
     NoPatternsFound,
+    /// A ui test checking for success has failure patterns
+    PatternFoundInPassTest,
     OutputDiffers {
         path: PathBuf,
         actual: String,
@@ -200,12 +203,7 @@ fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Comm
         target,
         &config.stdout_filters,
     );
-    let require = match config.mode {
-        Mode::Pass => false,
-        Mode::Panic => false, // Should we do anything here?
-        Mode::UB => true,
-    };
-    check_annotations(path, &stderr, &mut errors, require, revision);
+    check_annotations(path, &stderr, &mut errors, config, revision);
     (miri, errors)
 }
 
@@ -213,7 +211,7 @@ fn check_annotations(
     path: &Path,
     stderr: &str,
     errors: &mut Errors,
-    require: bool,
+    config: &Config,
     revision: &str,
 ) {
     let content = std::fs::read_to_string(path).unwrap();
@@ -248,9 +246,12 @@ fn check_annotations(
             found_annotation = true;
         }
     }
-    if found_annotation != require {
-        errors.push(Error::NoPatternsFound);
-    }
+    match (config.mode, found_annotation) {
+        (Mode::Pass, true) |
+        (Mode::Panic, true) => errors.push(Error::PatternFoundInPassTest),
+        (Mode::UB, false) => errors.push(Error::NoPatternsFound),
+        _ => {},
+    };
 }
 
 fn check_output(
