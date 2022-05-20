@@ -45,8 +45,8 @@ fn run_tests(mode: Mode, path: &str, target: Option<String>) {
     let config = Config {
         args: flags,
         target,
-        stderr_filters: REGEXES.clone(),
-        stdout_filters: REGEXES.clone(),
+        stderr_filters: STDERR.clone(),
+        stdout_filters: STDOUT.clone(),
         root_dir: PathBuf::from(path),
         mode,
         program: miri_path(),
@@ -57,14 +57,19 @@ fn run_tests(mode: Mode, path: &str, target: Option<String>) {
 }
 
 macro_rules! regexes {
-    ($($regex:expr => $replacement:expr,)*) => {lazy_static::lazy_static! {
-        static ref REGEXES: Vec<(Regex, &'static str)> = vec![
+    ($name:ident: $($regex:expr => $replacement:expr,)*) => {lazy_static::lazy_static! {
+        static ref $name: Vec<(Regex, &'static str)> = vec![
             $((Regex::new($regex).unwrap(), $replacement),)*
         ];
     }};
 }
 
 regexes! {
+    STDOUT:
+}
+
+regexes! {
+    STDERR:
     // erase line and column info
     r"\.rs:[0-9]+:[0-9]+"            => ".rs:LL:CC",
     // erase alloc ids
