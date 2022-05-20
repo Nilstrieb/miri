@@ -96,8 +96,8 @@ produced by miri. You can use `./miri bless` to automatically (re)generate these
 you add new tests or change how miri presents certain output.
 
 Note that when you also use `MIRIFLAGS` to change optimizations and similar, the ui output
-will change in unexpected ways, so we ignore that output for now. In order to still be able
-to run the other checks, use `MIRI_SKIP_UI_CHECKS=1 ./miri test`.
+will change in unexpected ways. In order to still be able
+to run the other checks while ignoring the ui output, use `MIRI_SKIP_UI_CHECKS=1 ./miri test`.
 
 ### Testing `cargo miri`
 
