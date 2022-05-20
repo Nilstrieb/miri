@@ -116,8 +116,10 @@ pub fn run_tests(config: Config) {
                             path.display()
                         );
                     }
-                    Error::NoPatternsFound => eprintln!("{}", "no error patterns found in failure test".red()),
-                    Error::PatternFoundInPassTest => eprintln!("{}", "error pattern found in success test".red()),
+                    Error::NoPatternsFound =>
+                        eprintln!("{}", "no error patterns found in failure test".red()),
+                    Error::PatternFoundInPassTest =>
+                        eprintln!("{}", "error pattern found in success test".red()),
                     Error::OutputDiffers { path, actual, expected } =>
                         compare_output(path, actual, expected),
                 }
@@ -253,10 +255,9 @@ fn check_annotations(
         }
     }
     match (config.mode, found_annotation) {
-        (Mode::Pass, true) |
-        (Mode::Panic, true) => errors.push(Error::PatternFoundInPassTest),
+        (Mode::Pass, true) | (Mode::Panic, true) => errors.push(Error::PatternFoundInPassTest),
         (Mode::Fail, false) => errors.push(Error::NoPatternsFound),
-        _ => {},
+        _ => {}
     };
 }
 
@@ -396,7 +397,8 @@ fn normalize(path: &Path, text: &str, filters: &Filter) -> String {
 impl Config {
     fn get_host(&self) -> String {
         rustc_version::VersionMeta::for_command(std::process::Command::new(&self.program))
-                .expect("failed to parse rustc version info").host
+            .expect("failed to parse rustc version info")
+            .host
     }
 }
 
