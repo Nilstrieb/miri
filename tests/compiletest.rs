@@ -64,33 +64,33 @@ macro_rules! regexes {
 
 regexes! {
     // erase line and column info
-    "\\.rs:[0-9]+:[0-9]+"            => ".rs:LL:CC",
+    r"\.rs:[0-9]+:[0-9]+"            => ".rs:LL:CC",
     // erase alloc ids
     "alloc[0-9]+"                    => "ALLOC",
     // erase borrow stack indices
     "<[0-9]+>"                       => "<BORROW_IDX>",
     // erase whitespace that differs between platforms
-    " +at (.*\\.rs)"                 => " at $1",
+    r" +at (.*\.rs)"                 => " at $1",
     // erase generics in backtraces
     "([0-9]+: .*)::<.*>"             => "$1",
     // erase addresses in backtraces
     "([0-9]+: ) +0x[0-9a-f]+ - (.*)" => "$1$2",
     // erase hexadecimals
-    "0x[0-9a-fA-F]+(\\[a[0-9]+\\])?" => "$$HEX",
+    r"0x[0-9a-fA-F]+(\[a[0-9]+\])?" => "$$HEX",
     // erase clocks
-    "VClock\\(\\[[^\\]]+\\]\\)"      => "VClock",
+    r"VClock\(\[[^\]]+\]\)"      => "VClock",
     // erase specific alignments
     "alignment [0-9]+"               => "alignment ALIGN",
     // erase thread caller ids
-    "\\(call [0-9]+\\)"              => "(call ID)",
+    r"\(call [0-9]+\)"              => "(call ID)",
     // erase platform module paths
     "sys::[a-z]+::"                  => "sys::PLATFORM::",
     // Windows file paths
-    "\\\\"                           => "/",
+    r"\\"                           => "/",
     // erase platform file paths
     "sys/[a-z]+/"                    => "sys/PLATFORM/",
     // erase error annotations in tests
-    "\\s*//~.*"                      => "",
+    r"\s*//~.*"                      => "",
 }
 
 fn ui(mode: Mode, path: &str) {
