@@ -123,5 +123,5 @@ fn main() {
 
     ui(Mode::Pass, "tests/run-pass");
     ui(Mode::Panic, "tests/run-fail");
-    ui(Mode::UB, "tests/compile-fail");
+    ui(Mode::Fail, "tests/compile-fail");
 }

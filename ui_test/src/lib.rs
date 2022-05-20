@@ -255,7 +255,7 @@ fn check_annotations(
     match (config.mode, found_annotation) {
         (Mode::Pass, true) |
         (Mode::Panic, true) => errors.push(Error::PatternFoundInPassTest),
-        (Mode::UB, false) => errors.push(Error::NoPatternsFound),
+        (Mode::Fail, false) => errors.push(Error::NoPatternsFound),
         _ => {},
     };
 }
@@ -404,14 +404,14 @@ impl Config {
 pub enum Mode {
     Pass,
     Panic,
-    UB,
+    Fail,
 }
 
 impl Mode {
     fn ok(self, status: ExitStatus) -> Errors {
         match (status.code().unwrap(), self) {
-            (1, Mode::UB) | (101, Mode::Panic) | (0, Mode::Pass) => vec![],
-            (_, Mode::Panic) | (_, Mode::UB) | (_, Mode::Pass) =>
+            (1, Mode::Fail) | (101, Mode::Panic) | (0, Mode::Pass) => vec![],
+            (_, Mode::Panic) | (_, Mode::Fail) | (_, Mode::Pass) =>
                 vec![Error::ExitStatus(self, status)],
         }
     }
