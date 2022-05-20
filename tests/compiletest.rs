@@ -12,7 +12,7 @@ fn miri_path() -> PathBuf {
     PathBuf::from(option_env!("MIRI").unwrap_or(env!("CARGO_BIN_EXE_miri")))
 }
 
-fn run_tests(mode: Mode, path: &str, target: String) {
+fn run_tests(mode: Mode, path: &str, target: Option<String>) {
     let in_rustc_test_suite = option_env!("RUSTC_STAGE").is_some();
 
     if in_rustc_test_suite {
@@ -41,8 +41,11 @@ fn run_tests(mode: Mode, path: &str, target: String) {
         }
     }
     flags.push("-Zui-testing".to_string());
-    flags.push("--target".to_string());
-    flags.push(target.clone());
+    if let Some(target) = &target {
+        flags.push("--target".to_string());
+        flags.push(target.clone());
+    }
+    let target = target.unwrap_or_else(get_host);
 
     eprintln!("   Compiler flags: {:?}", flags);
 
@@ -428,10 +431,13 @@ fn normalize(path: &Path, text: &str) -> String {
 fn ui(mode: Mode, path: &str) {
     let target = get_target();
 
-    eprintln!(
-        "{}",
-        format!("## Running ui tests in {path} against miri for target {target}").green().bold()
-    );
+    eprint!("{}", format!("## Running ui tests in {path} against miri for ").green().bold());
+
+    if let Some(target) = &target {
+        eprintln!("{target}");
+    } else {
+        eprintln!("host");
+    }
 
     run_tests(mode, path, target);
 }
@@ -443,8 +449,8 @@ fn get_host() -> String {
     version_meta.host
 }
 
-fn get_target() -> String {
-    env::var("MIRI_TEST_TARGET").unwrap_or_else(|_| get_host())
+fn get_target() -> Option<String> {
+    env::var("MIRI_TEST_TARGET").ok()
 }
 
 #[derive(Copy, Clone, Debug)]
