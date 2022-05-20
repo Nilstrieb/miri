@@ -59,7 +59,8 @@ pub fn run_tests(config: Config) {
                     } else {
                         continue;
                     }
-                    total.fetch_add(1, Ordering::Relaxed); // Read rules for skipping from file
+                    total.fetch_add(1, Ordering::Relaxed);
+                    // Read rules for skipping from file
                     if ignore_file(&path, &target) {
                         skipped.fetch_add(1, Ordering::Relaxed);
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
