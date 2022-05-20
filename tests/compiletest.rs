@@ -51,6 +51,7 @@ fn run_tests(mode: Mode, path: &str, target: Option<String>) {
         mode,
         program: miri_path(),
         bless: env::var_os("MIRI_BLESS").is_some(),
+        skip_output_checks: env::var_os("MIRI_SKIP_UI_CHECKS").is_some(),
     };
     ui_test::run_tests(config)
 }

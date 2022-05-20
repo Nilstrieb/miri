@@ -25,6 +25,8 @@ pub struct Config {
     /// Instead of erroring if the stderr/stdout differs from the expected
     /// automatically replace it with the found output (after applying filters).
     pub bless: bool,
+    /// Ignore mismatches in the stderr/stdout files.
+    pub skip_output_checks: bool,
 }
 
 pub type Filter = Vec<(Regex, &'static str)>;
@@ -279,7 +281,7 @@ fn check_output(
         }
     } else {
         let expected_output = std::fs::read_to_string(&path).unwrap_or_default();
-        if env::var_os("MIRI_SKIP_UI_CHECKS").is_none() {
+        if !config.skip_output_checks {
             if output != expected_output {
                 errors.push(Error::OutputDiffers {
                     path,
