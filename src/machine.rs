@@ -581,8 +581,9 @@ impl<'mir, 'tcx> Machine<'mir, 'tcx> for Evaluator<'mir, 'tcx> {
             Ok(ptr)
         } else {
             throw_unsup_format!(
-                "`extern` static {} is not supported by Miri",
-                ecx.tcx.def_path_str(def_id)
+                "`extern` static `{}` from crate `{}` is not supported by Miri",
+                ecx.tcx.def_path_str(def_id),
+                ecx.tcx.crate_name(def_id.krate),
             )
         }
     }
