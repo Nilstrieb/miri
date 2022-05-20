@@ -225,7 +225,7 @@ fn check_annotations(
     let content = std::fs::read_to_string(path).unwrap();
     let mut found_annotation = false;
     let regex =
-        Regex::new(r"//(\[(?P<revision>[^\]]+)\])?~[\^|]*\s*(ERROR|HELP|WARN)?:?(?P<text>.*)")
+        Regex::new(r"//(\[(?P<revision>[^\]]+)\])?~[|^]*\s*(ERROR|HELP|WARN)?:?(?P<text>.*)")
             .unwrap();
     for (i, line) in content.lines().enumerate() {
         if let Some(s) = line.strip_prefix("// error-pattern:") {
