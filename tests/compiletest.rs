@@ -12,6 +12,29 @@ fn miri_path() -> PathBuf {
     PathBuf::from(option_env!("MIRI").unwrap_or(env!("CARGO_BIN_EXE_miri")))
 }
 
+#[derive(Debug)]
+pub struct Config {
+    /// Arguments passed to the binary that is executed.
+    pub args: Vec<String>,
+    /// `None` to run on the host, otherwise a target triple
+    pub target: Option<String>,
+    /// Filters applied to stderr output before processing it
+    pub stderr_filters: Filter,
+    /// Filters applied to stdout output before processing it
+    pub stdout_filters: Filter,
+    /// The folder in which to start searching for .rs files
+    pub root_dir: PathBuf,
+    pub mode: Mode,
+}
+
+impl Config {
+    pub fn target(&self) -> &str {
+        self.target.as_deref().unwrap_or_else(get_host)
+    }
+}
+
+pub type Filter = Vec<(Regex, &'static str)>;
+
 fn run_tests(mode: Mode, path: &str, target: Option<String>) {
     let in_rustc_test_suite = option_env!("RUSTC_STAGE").is_some();
 
@@ -45,14 +68,25 @@ fn run_tests(mode: Mode, path: &str, target: Option<String>) {
         flags.push("--target".to_string());
         flags.push(target.clone());
     }
-    let target = target.unwrap_or_else(get_host);
 
-    eprintln!("   Compiler flags: {:?}", flags);
+    let config = Config {
+        args: flags,
+        target,
+        stderr_filters: REGEXES.clone(),
+        stdout_filters: REGEXES.clone(),
+        root_dir: PathBuf::from(path),
+        mode,
+    };
+    ui_run_tests(config)
+}
+
+fn ui_run_tests(config: Config) {
+    eprintln!("   Compiler flags: {:?}", config.args);
 
     let grab_entries =
         |path: &Path| std::fs::read_dir(path).unwrap().map(|entry| entry.unwrap().path());
     let todo = SegQueue::new();
-    todo.push(PathBuf::from(path));
+    todo.push(config.root_dir.clone());
 
     let failures = Mutex::new(vec![]);
     let total = AtomicUsize::default();
@@ -78,13 +112,13 @@ fn run_tests(mode: Mode, path: &str, target: Option<String>) {
                         continue;
                     }
                     total.fetch_add(1, Ordering::Relaxed); // Read rules for skipping from file
-                    if ignore_file(&path, &target) {
+                    if ignore_file(&path, &config.target()) {
                         skipped.fetch_add(1, Ordering::Relaxed);
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
                         continue;
                     }
                     for revision in revisions(&path) {
-                        let (m, errors) = run_test(&path, &target, &flags, mode, &revision);
+                        let (m, errors) = run_test(&path, &config, &revision);
 
                         // Using `format` to prevent messages from threads from getting intermingled.
                         let mut msg = format!("{} ", path.display());
@@ -179,16 +213,10 @@ fn revisions(path: &Path) -> Vec<String> {
     vec![String::new()]
 }
 
-fn run_test(
-    path: &Path,
-    target: &str,
-    flags: &[String],
-    mode: Mode,
-    revision: &str,
-) -> (Command, Errors) {
+fn run_test(path: &Path, config: &Config, revision: &str) -> (Command, Errors) {
     // Run miri
     let mut miri = Command::new(miri_path());
-    miri.args(flags.iter());
+    miri.args(config.args.iter());
     miri.arg(path);
     if !revision.is_empty() {
         miri.arg(format!("--cfg={revision}"));
@@ -196,7 +224,7 @@ fn run_test(
     miri.env("RUSTC_BACKTRACE", "0");
     extract_env(&mut miri, path);
     let output = miri.output().expect("could not execute miri");
-    let mut errors = mode.ok(output.status);
+    let mut errors = config.mode.ok(output.status);
     // Check output files (if any)
     let revised = |extension: &str| {
         if revision.is_empty() {
@@ -205,9 +233,23 @@ fn run_test(
             format!("{}.{}", revision, extension)
         }
     };
-    let stderr = check_output(&output.stderr, path, &mut errors, revised("stderr"), target);
-    check_output(&output.stdout, path, &mut errors, revised("stdout"), target);
-    let require = match mode {
+    let stderr = check_output(
+        &output.stderr,
+        path,
+        &mut errors,
+        revised("stderr"),
+        &config.target(),
+        &config.stderr_filters,
+    );
+    check_output(
+        &output.stdout,
+        path,
+        &mut errors,
+        revised("stdout"),
+        &config.target(),
+        &config.stdout_filters,
+    );
+    let require = match config.mode {
         Mode::Pass => false,
         Mode::Panic => false, // Should we do anything here?
         Mode::UB => true,
@@ -266,9 +308,10 @@ fn check_output(
     errors: &mut Errors,
     kind: String,
     target: &str,
+    filters: &Filter,
 ) -> String {
     let output = std::str::from_utf8(&output).unwrap();
-    let output = normalize(path, output);
+    let output = normalize(path, output, filters);
     let path = output_path(path, kind, target);
     if env::var_os("MIRI_BLESS").is_some() {
         if output.is_empty() {
@@ -405,7 +448,7 @@ regexes! {
     "\\s*//~.*"                      => "",
 }
 
-fn normalize(path: &Path, text: &str) -> String {
+fn normalize(path: &Path, text: &str, filters: &Filter) -> String {
     let content = std::fs::read_to_string(path).unwrap();
 
     // Useless paths
@@ -414,7 +457,7 @@ fn normalize(path: &Path, text: &str) -> String {
         text = text.replace(lib_path, "RUSTLIB");
     }
 
-    for (regex, replacement) in REGEXES.iter() {
+    for (regex, replacement) in filters.iter() {
         text = regex.replace_all(&text, *replacement).to_string();
     }
 
@@ -444,11 +487,12 @@ fn ui(mode: Mode, path: &str) {
     run_tests(mode, path, target);
 }
 
-fn get_host() -> String {
-    let version_meta =
-        rustc_version::VersionMeta::for_command(std::process::Command::new(miri_path()))
-            .expect("failed to parse rustc version info");
-    version_meta.host
+fn get_host<'a>() -> &'a str {
+    lazy_static::lazy_static! {
+        static ref HOST: String = rustc_version::VersionMeta::for_command(std::process::Command::new(miri_path()))
+            .expect("failed to parse rustc version info").host;
+    }
+    &*HOST
 }
 
 fn get_target() -> Option<String> {
@@ -456,7 +500,7 @@ fn get_target() -> Option<String> {
 }
 
 #[derive(Copy, Clone, Debug)]
-enum Mode {
+pub enum Mode {
     Pass,
     Panic,
     UB,
