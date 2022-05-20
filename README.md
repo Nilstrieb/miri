@@ -412,6 +412,11 @@ Moreover, Miri recognizes some environment variables:
 * `MIRI_TEST_TARGET` (recognized by the test suite) indicates which target
   architecture to test against.  `miri` and `cargo miri` accept the `--target`
   flag for the same purpose.
+* `MIRI_BLESS` (recognized by the test suite) overwrite all `stderr` and `stdout` files
+  instead of checking whether the output matches.
+* `MIRI_SKIP_UI_CHECKS` (recognized by the test suite) don't check whether the
+  `stderr` or `stdout` files match the actual output. Useful for the rustc test suite
+  which has subtle differences that we don't care about.
 
 The following environment variables are *internal* and must not be used by
 anyone but Miri itself. They are used to communicate between different Miri
