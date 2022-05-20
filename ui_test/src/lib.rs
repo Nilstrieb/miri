@@ -96,22 +96,23 @@ pub fn run_tests(config: Config) {
             eprintln!();
             eprint!("{}", path.display().to_string().underline());
             if !revision.is_empty() {
-                eprint!(" (revision `{}`) ", revision);
+                eprint!(" (revision `{}`)", revision);
             }
-            eprint!("{}", "FAILED".red());
+            eprint!("{}", " FAILED".red());
             eprintln!();
             eprintln!("command: {:?}", miri);
+            eprintln!();
             for error in errors {
                 match error {
                     Error::ExitStatus(mode, exit_status) => eprintln!("{mode:?} got {exit_status}"),
                     Error::PatternNotFound { pattern, definition_line } => {
-                        eprintln!("`{pattern}` not found in stderr output");
+                        eprintln!("`{pattern}` {} in stderr output", "not found".red());
                         eprintln!(
                             "expected because of pattern here: {}:{definition_line}",
                             path.display()
                         );
                     }
-                    Error::NoPatternsFound => eprintln!("no error patterns found in failure test"),
+                    Error::NoPatternsFound => eprintln!("{}", "no error patterns found in failure test".red()),
                     Error::OutputDiffers { path, actual, expected } =>
                         compare_output(path, actual, expected),
                 }
@@ -142,6 +143,7 @@ enum Error {
         pattern: String,
         definition_line: usize,
     },
+    /// A ui test checking for failure does not have any failure patterns
     NoPatternsFound,
     OutputDiffers {
         path: PathBuf,
