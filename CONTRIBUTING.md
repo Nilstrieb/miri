@@ -1,6 +1,6 @@
 # Contribution Guide
 
-If you want to hack on miri yourself, great!  Here are some resources you might
+If you want to hack on Miri yourself, great!  Here are some resources you might
 find useful.
 
 ## Getting started
@@ -91,9 +91,9 @@ evaluation error was originally raised.
 
 #### UI testing
 
-We use ui-testing in miri, meaning we generate `.stderr` and `.stdout` files for the output
+We use ui-testing in Miri, meaning we generate `.stderr` and `.stdout` files for the output
 produced by Miri. You can use `./miri bless` to automatically (re)generate these files when
-you add new tests or change how miri presents certain output.
+you add new tests or change how Miri presents certain output.
 
 Note that when you also use `MIRIFLAGS` to change optimizations and similar, the ui output
 will change in unexpected ways. In order to still be able
@@ -193,7 +193,7 @@ A big part of the Miri driver lives in rustc, so working on Miri will sometimes
 require using a locally built rustc. The bug you want to fix may actually be on
 the rustc side, or you just need to get more detailed trace of the execution
 than what is possible with release builds -- in both cases, you should develop
-miri against a rustc you compiled yourself, with debug assertions (and hence
+Miri against a rustc you compiled yourself, with debug assertions (and hence
 tracing) enabled.
 
 The setup for a local rustc works as follows:
@@ -201,7 +201,7 @@ The setup for a local rustc works as follows:
 # Clone the rust-lang/rust repo.
 git clone https://github.com/rust-lang/rust rustc
 cd rustc
-# Create a config.toml with defaults for working on miri.
+# Create a config.toml with defaults for working on Miri.
 ./x.py setup compiler
  # Now edit `config.toml` and under `[rust]` set `debug-assertions = true`.
 

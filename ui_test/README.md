@@ -16,5 +16,5 @@ A smaller version of compiletest-rs
     * `//~` comments can be restricted to specific revisions by adding the revision name before the `~` in square brackets: `//[XXX]~`
 * `// compile-flags: XXX` appends `XXX` to the command line arguments passed to the rustc driver
 * `// rustc-env: XXX=YYY` sets the env var `XXX` to `YYY` for the rustc driver execution.
-    * for miri this is equivalent to setting env vars for the program execution
+    * for Miri this is equivalent to setting env vars for the program execution
 * `// normalize-stderr-test "REGEX" "REPLACEMENT"` replaces all matches of `REGEX` in the stderr with `REPLACEMENT`. The replacement may specify `$1` and similar backreferences to paste captures.
