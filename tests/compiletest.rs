@@ -50,6 +50,7 @@ fn run_tests(mode: Mode, path: &str, target: Option<String>) {
         root_dir: PathBuf::from(path),
         mode,
         program: miri_path(),
+        bless: env::var_os("MIRI_BLESS").is_some(),
     };
     ui_test::run_tests(config)
 }

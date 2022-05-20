@@ -22,6 +22,9 @@ pub struct Config {
     pub root_dir: PathBuf,
     pub mode: Mode,
     pub program: PathBuf,
+    /// Instead of erroring if the stderr/stdout differs from the expected
+    /// automatically replace it with the found output (after applying filters).
+    pub bless: bool,
 }
 
 pub type Filter = Vec<(Regex, &'static str)>;
@@ -194,6 +197,7 @@ fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Comm
         revised("stderr"),
         target,
         &config.stderr_filters,
+        &config,
     );
     check_output(
         &output.stdout,
@@ -202,6 +206,7 @@ fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Comm
         revised("stdout"),
         target,
         &config.stdout_filters,
+        &config,
     );
     check_annotations(path, &stderr, &mut errors, config, revision);
     (miri, errors)
@@ -261,11 +266,12 @@ fn check_output(
     kind: String,
     target: &str,
     filters: &Filter,
+    config: &Config,
 ) -> String {
     let output = std::str::from_utf8(&output).unwrap();
     let output = normalize(path, output, filters);
     let path = output_path(path, kind, target);
-    if env::var_os("MIRI_BLESS").is_some() {
+    if config.bless {
         if output.is_empty() {
             let _ = std::fs::remove_file(path);
         } else {
