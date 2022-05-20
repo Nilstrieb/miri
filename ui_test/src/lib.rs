@@ -409,9 +409,9 @@ pub enum Mode {
 
 impl Mode {
     fn ok(self, status: ExitStatus) -> Errors {
-        match (status.success(), self) {
-            (false, Mode::UB) | (false, Mode::Panic) | (true, Mode::Pass) => vec![],
-            (true, Mode::Panic) | (true, Mode::UB) | (false, Mode::Pass) =>
+        match (status.code().unwrap(), self) {
+            (1, Mode::UB) | (101, Mode::Panic) | (0, Mode::Pass) => vec![],
+            (_, Mode::Panic) | (_, Mode::UB) | (_, Mode::Pass) =>
                 vec![Error::ExitStatus(self, status)],
         }
     }
