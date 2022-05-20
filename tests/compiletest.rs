@@ -12,7 +12,7 @@ fn miri_path() -> PathBuf {
     PathBuf::from(option_env!("MIRI").unwrap_or(env!("CARGO_BIN_EXE_miri")))
 }
 
-fn run_tests(mode: Mode, path: &str, target: &str) {
+fn run_tests(mode: Mode, path: &str, target: String) {
     let in_rustc_test_suite = option_env!("RUSTC_STAGE").is_some();
 
     if in_rustc_test_suite {
@@ -42,8 +42,7 @@ fn run_tests(mode: Mode, path: &str, target: &str) {
     }
     flags.push("-Zui-testing".to_string());
     flags.push("--target".to_string());
-    flags.push(target.to_string());
-    let target = target.to_string();
+    flags.push(target.clone());
 
     eprintln!("   Compiler flags: {:?}", flags);
 
@@ -426,7 +425,9 @@ fn normalize(path: &Path, text: &str) -> String {
     text
 }
 
-fn ui(mode: Mode, path: &str, target: &str) {
+fn ui(mode: Mode, path: &str) {
+    let target = get_target();
+    
     eprintln!(
         "{}",
         format!("## Running ui tests in {} against miri for target {}", path, target)
@@ -473,8 +474,7 @@ fn main() {
     // Panic tests expect backtraces to be printed.
     env::set_var("RUST_BACKTRACE", "1");
 
-    let target = get_target();
-    ui(Mode::Pass, "tests/run-pass", &target);
-    ui(Mode::Panic, "tests/run-fail", &target);
-    ui(Mode::UB, "tests/compile-fail", &target);
+    ui(Mode::Pass, "tests/run-pass");
+    ui(Mode::Panic, "tests/run-fail");
+    ui(Mode::UB, "tests/compile-fail");
 }
