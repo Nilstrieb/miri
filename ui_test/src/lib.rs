@@ -414,8 +414,7 @@ impl Mode {
     fn ok(self, status: ExitStatus) -> Errors {
         match (status.code().unwrap(), self) {
             (1, Mode::Fail) | (101, Mode::Panic) | (0, Mode::Pass) => vec![],
-            (_, Mode::Panic) | (_, Mode::Fail) | (_, Mode::Pass) =>
-                vec![Error::ExitStatus(self, status)],
+            _ => vec![Error::ExitStatus(self, status)],
         }
     }
 }
