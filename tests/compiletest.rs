@@ -86,15 +86,16 @@ fn run_tests(mode: Mode, path: &str, target: Option<String>) {
                     for revision in revisions(&path) {
                         let (m, errors) = run_test(&path, &target, &flags, mode, &revision);
 
-                        eprint!("{} .. ", path.display());
+                        // Using `format` to prevent messages from threads from getting intermingled.
+                        let mut msg = format!("{} ", path.display());
+                        if !revision.is_empty() {
+                            msg = format!("{msg}(revision `{revision}`) ");
+                        }
+                        msg = format!("{msg} .. ");
                         if errors.is_empty() {
-                            eprintln!("{}", "ok".green());
+                            eprintln!("{msg}{}", "ok".green());
                         } else {
-                            eprint!("{}", "FAILED".red().bold());
-                            if !revision.is_empty() {
-                                eprint!(" (revision `{}`)", revision);
-                            }
-                            eprintln!();
+                            eprintln!("{msg}{}", "FAILED".red().bold());
                             failures.lock().unwrap().push((path.clone(), m, revision, errors));
                         }
                     }
@@ -110,10 +111,11 @@ fn run_tests(mode: Mode, path: &str, target: Option<String>) {
     if !failures.is_empty() {
         for (path, miri, revision, errors) in &failures {
             eprintln!();
-            eprint!("{} {}", path.display().to_string().underline(), "FAILED".red());
+            eprint!("{}", path.display().to_string().underline());
             if !revision.is_empty() {
                 eprint!(" (revision `{}`) ", revision);
             }
+            eprint!("{}", "FAILED".red());
             eprintln!();
             eprintln!("command: {:?}", miri);
             for error in errors {
