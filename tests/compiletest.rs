@@ -427,12 +427,10 @@ fn normalize(path: &Path, text: &str) -> String {
 
 fn ui(mode: Mode, path: &str) {
     let target = get_target();
-    
+
     eprintln!(
         "{}",
-        format!("## Running ui tests in {} against miri for target {}", path, target)
-            .green()
-            .bold()
+        format!("## Running ui tests in {path} against miri for target {target}").green().bold()
     );
 
     run_tests(mode, path, target);
