@@ -50,7 +50,7 @@ pub fn run_tests(config: Config) {
     let skipped = AtomicUsize::default();
 
     crossbeam::scope(|s| {
-        for _ in 0..num_cpus::get() {
+        for _ in 0..std::thread::available_parallelism().unwrap().get() {
             s.spawn(|_| {
                 while let Some(path) = todo.pop() {
                     // Collect everything inside directories
