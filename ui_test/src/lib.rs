@@ -195,7 +195,12 @@ fn run_test(
         miri.arg(format!("--cfg={revision}"));
     }
     miri.env("RUSTC_BACKTRACE", "0");
-    extract_env(&mut miri, path);
+    for arg in &comments.compile_flags {
+        miri.arg(arg);
+    }
+    for (k, v) in &comments.env_vars {
+        miri.env(k, v);
+    }
     let output = miri.output().expect("could not execute miri");
     let mut errors = config.mode.ok(output.status);
     // Check output files (if any)
@@ -361,22 +366,6 @@ fn get_pointer_width(triple: &str) -> &'static str {
         "16bit"
     } else {
         "32bit"
-    }
-}
-
-fn extract_env(cmd: &mut Command, path: &Path) {
-    let content = std::fs::read_to_string(path).unwrap();
-    for line in content.lines() {
-        if let Some(s) = line.strip_prefix("// compile-flags:") {
-            cmd.args(s.split_whitespace());
-        }
-        if let Some(s) = line.strip_prefix("// rustc-env:") {
-            for env in s.split_whitespace() {
-                if let Some((k, v)) = env.split_once('=') {
-                    cmd.env(k, v);
-                }
-            }
-        }
     }
 }
 

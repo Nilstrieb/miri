@@ -11,7 +11,12 @@ pub struct Comments {
     pub ignore: Vec<String>,
     /// Only run this test if all of these filters apply
     pub only: Vec<String>,
+    /// Generate one .stderr file per bit width, by prepending with `.64bit` and similar
     pub stderr_per_bitwidth: bool,
+    /// Additional flags to pass to the executable
+    pub compile_flags: Vec<String>,
+    /// Additional env vars to set for the executable
+    pub env_vars: Vec<(String, String)>,
 }
 
 impl Comments {
@@ -50,6 +55,16 @@ impl Comments {
                     path.display()
                 );
                 this.stderr_per_bitwidth = true;
+            }
+            if let Some(s) = line.strip_prefix("// compile-flags:") {
+                this.compile_flags.extend(s.split_whitespace().map(|s| s.to_string()));
+            }
+            if let Some(s) = line.strip_prefix("// rustc-env:") {
+                for env in s.split_whitespace() {
+                    if let Some((k, v)) = env.split_once('=') {
+                        this.env_vars.push((k.to_string(), v.to_string()));
+                    }
+                }
             }
         }
         this
