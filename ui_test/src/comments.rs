@@ -11,6 +11,7 @@ pub struct Comments {
     pub ignore: Vec<String>,
     /// Only run this test if all of these filters apply
     pub only: Vec<String>,
+    pub stderr_per_bitwidth: bool,
 }
 
 impl Comments {
@@ -41,6 +42,14 @@ impl Comments {
                     .map(|(s, _)| s)
                     .unwrap_or(s);
                 this.only.push(s.to_owned());
+            }
+            if line.starts_with("// stderr-per-bitwidth") {
+                assert!(
+                    !this.stderr_per_bitwidth,
+                    "{}:{l}, cannot specifiy stderr-per-bitwidth twice",
+                    path.display()
+                );
+                this.stderr_per_bitwidth = true;
             }
         }
         this

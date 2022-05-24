@@ -75,8 +75,10 @@ pub fn run_tests(config: Config) {
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
                         continue;
                     }
-                    for revision in comments.revisions.unwrap_or_else(|| vec![String::new()]) {
-                        let (m, errors) = run_test(&path, &config, &target, &revision);
+                    for revision in
+                        comments.revisions.clone().unwrap_or_else(|| vec![String::new()])
+                    {
+                        let (m, errors) = run_test(&path, &config, &target, &revision, &comments);
 
                         // Using `format` to prevent messages from threads from getting intermingled.
                         let mut msg = format!("{} ", path.display());
@@ -178,7 +180,13 @@ enum Error {
 
 type Errors = Vec<Error>;
 
-fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Command, Errors) {
+fn run_test(
+    path: &Path,
+    config: &Config,
+    target: &str,
+    revision: &str,
+    comments: &Comments,
+) -> (Command, Errors) {
     // Run miri
     let mut miri = Command::new(&config.program);
     miri.args(config.args.iter());
@@ -206,6 +214,7 @@ fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Comm
         target,
         &config.stderr_filters,
         &config,
+        comments,
     );
     check_output(
         &output.stdout,
@@ -215,6 +224,7 @@ fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Comm
         target,
         &config.stdout_filters,
         &config,
+        comments,
     );
     check_annotations(path, &output.stderr, &mut errors, config, revision);
     (miri, errors)
@@ -280,10 +290,11 @@ fn check_output(
     target: &str,
     filters: &Filter,
     config: &Config,
+    comments: &Comments,
 ) {
     let output = std::str::from_utf8(&output).unwrap();
     let output = normalize(path, output, filters);
-    let path = output_path(path, kind, target);
+    let path = output_path(path, comments, kind, target);
     if config.bless {
         if output.is_empty() {
             let _ = std::fs::remove_file(path);
@@ -304,12 +315,9 @@ fn check_output(
     }
 }
 
-fn output_path(path: &Path, kind: String, target: &str) -> PathBuf {
-    let content = std::fs::read_to_string(path).unwrap();
-    for line in content.lines() {
-        if line.starts_with("// stderr-per-bitwidth") {
-            return path.with_extension(format!("{}.{kind}", get_pointer_width(target)));
-        }
+fn output_path(path: &Path, comments: &Comments, kind: String, target: &str) -> PathBuf {
+    if comments.stderr_per_bitwidth {
+        return path.with_extension(format!("{}.{kind}", get_pointer_width(target)));
     }
     path.with_extension(kind)
 }
