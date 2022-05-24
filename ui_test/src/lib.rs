@@ -106,23 +106,32 @@ pub fn run_tests(config: Config) {
             eprintln!();
             eprintln!("command: {:?}", miri);
             eprintln!();
+            let mut dump_stderr = None;
             for error in errors {
                 match error {
                     Error::ExitStatus(mode, exit_status) => eprintln!("{mode:?} got {exit_status}"),
-                    Error::PatternNotFound { pattern, definition_line } => {
+                    Error::PatternNotFound { stderr, pattern, definition_line } => {
                         eprintln!("`{pattern}` {} in stderr output", "not found".red());
                         eprintln!(
                             "expected because of pattern here: {}:{definition_line}",
                             path.display()
                         );
+                        dump_stderr = Some(stderr.clone())
                     }
                     Error::NoPatternsFound =>
                         eprintln!("{}", "no error patterns found in failure test".red()),
                     Error::PatternFoundInPassTest =>
                         eprintln!("{}", "error pattern found in success test".red()),
-                    Error::OutputDiffers { path, actual, expected } =>
-                        compare_output(path, actual, expected),
+                    Error::OutputDiffers { path, actual, expected } => {
+                        dump_stderr = None;
+                        compare_output(path, actual, expected);
+                    }
                 }
+                eprintln!();
+            }
+            if let Some(stderr) = dump_stderr {
+                eprintln!("actual stderr:");
+                eprintln!("{}", stderr);
                 eprintln!();
             }
         }
@@ -147,6 +156,7 @@ enum Error {
     /// Got an invalid exit status for the given mode.
     ExitStatus(Mode, ExitStatus),
     PatternNotFound {
+        stderr: String,
         pattern: String,
         definition_line: usize,
     },
@@ -193,7 +203,7 @@ fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Comm
             format!("{}.{}", revision, extension)
         }
     };
-    let stderr = check_output(
+    check_output(
         &output.stderr,
         path,
         &mut errors,
@@ -211,17 +221,18 @@ fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Comm
         &config.stdout_filters,
         &config,
     );
-    check_annotations(path, &stderr, &mut errors, config, revision);
+    check_annotations(path, &output.stderr, &mut errors, config, revision);
     (miri, errors)
 }
 
 fn check_annotations(
     path: &Path,
-    stderr: &str,
+    unnormalized_stderr: &[u8],
     errors: &mut Errors,
     config: &Config,
     revision: &str,
 ) {
+    let unnormalized_stderr = std::str::from_utf8(unnormalized_stderr).unwrap();
     let content = std::fs::read_to_string(path).unwrap();
     let mut found_annotation = false;
     let regex =
@@ -230,8 +241,8 @@ fn check_annotations(
     for (i, line) in content.lines().enumerate() {
         if let Some(s) = line.strip_prefix("// error-pattern:") {
             let s = s.trim();
-            if !stderr.contains(s) {
-                errors.push(Error::PatternNotFound { pattern: s.to_string(), definition_line: i });
+            if !unnormalized_stderr.contains(s) {
+                errors.push(Error::PatternNotFound { stderr: unnormalized_stderr.to_string(), pattern: s.to_string(), definition_line: i });
             }
             found_annotation = true;
         }
@@ -245,8 +256,9 @@ fn check_annotations(
                 }
             }
 
-            if !stderr.contains(matched) {
+            if !unnormalized_stderr.contains(matched) {
                 errors.push(Error::PatternNotFound {
+                    stderr: unnormalized_stderr.to_string(),
                     pattern: matched.to_string(),
                     definition_line: i,
                 });
@@ -269,7 +281,7 @@ fn check_output(
     target: &str,
     filters: &Filter,
     config: &Config,
-) -> String {
+) {
     let output = std::str::from_utf8(&output).unwrap();
     let output = normalize(path, output, filters);
     let path = output_path(path, kind, target);
@@ -285,13 +297,12 @@ fn check_output(
             if output != expected_output {
                 errors.push(Error::OutputDiffers {
                     path,
-                    actual: output.clone(),
+                    actual: output,
                     expected: expected_output,
                 });
             }
         }
     }
-    output
 }
 
 fn output_path(path: &Path, kind: String, target: &str) -> PathBuf {

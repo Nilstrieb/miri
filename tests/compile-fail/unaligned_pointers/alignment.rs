@@ -1,4 +1,4 @@
-// error-pattern: but alignment ALIGN is required
+// error-pattern: but alignment 4 is required
 // normalize-stderr-test "\.add\(1\)" -> "       "
 
 fn main() {
