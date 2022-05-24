@@ -7,6 +7,10 @@ use colored::*;
 use crossbeam::queue::SegQueue;
 use regex::Regex;
 
+use crate::comments::Comments;
+
+mod comments;
+
 #[derive(Debug)]
 pub struct Config {
     /// Arguments passed to the binary that is executed.
@@ -64,13 +68,14 @@ pub fn run_tests(config: Config) {
                         continue;
                     }
                     total.fetch_add(1, Ordering::Relaxed);
+                    let comments = Comments::parse(&path);
                     // Read rules for skipping from file
                     if ignore_file(&path, &target) {
                         skipped.fetch_add(1, Ordering::Relaxed);
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
                         continue;
                     }
-                    for revision in revisions(&path) {
+                    for revision in comments.revisions.unwrap_or_else(|| vec![String::new()]) {
                         let (m, errors) = run_test(&path, &config, &target, &revision);
 
                         // Using `format` to prevent messages from threads from getting intermingled.
@@ -173,16 +178,6 @@ enum Error {
 
 type Errors = Vec<Error>;
 
-fn revisions(path: &Path) -> Vec<String> {
-    let content = std::fs::read_to_string(path).unwrap();
-    for line in content.lines() {
-        if let Some(revisions) = line.strip_prefix("// revisions:") {
-            return revisions.trim().split_whitespace().map(|s| s.to_string()).collect();
-        }
-    }
-    vec![String::new()]
-}
-
 fn run_test(path: &Path, config: &Config, target: &str, revision: &str) -> (Command, Errors) {
     // Run miri
     let mut miri = Command::new(&config.program);
@@ -242,7 +237,11 @@ fn check_annotations(
         if let Some(s) = line.strip_prefix("// error-pattern:") {
             let s = s.trim();
             if !unnormalized_stderr.contains(s) {
-                errors.push(Error::PatternNotFound { stderr: unnormalized_stderr.to_string(), pattern: s.to_string(), definition_line: i });
+                errors.push(Error::PatternNotFound {
+                    stderr: unnormalized_stderr.to_string(),
+                    pattern: s.to_string(),
+                    definition_line: i,
+                });
             }
             found_annotation = true;
         }
