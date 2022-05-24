@@ -195,6 +195,7 @@ fn run_test(
     if !revision.is_empty() {
         miri.arg(format!("--cfg={revision}"));
     }
+    // Tests should not change behaviour when people have that env var set.
     miri.env("RUSTC_BACKTRACE", "0");
     for arg in &comments.compile_flags {
         miri.arg(arg);
