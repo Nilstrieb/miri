@@ -7,6 +7,10 @@ use std::path::Path;
 pub struct Comments {
     /// List of revision names to execute. Can only be speicified once
     pub revisions: Option<Vec<String>>,
+    /// Don't run this test if any of these filters apply
+    pub ignore: Vec<String>,
+    /// Only run this test if all of these filters apply
+    pub only: Vec<String>,
 }
 
 impl Comments {
@@ -23,6 +27,20 @@ impl Comments {
                 );
                 this.revisions =
                     Some(revisions.trim().split_whitespace().map(|s| s.to_string()).collect());
+            }
+            if let Some(s) = line.strip_prefix("// ignore-") {
+                let s = s
+                    .split_once(|c: char| c == ':' || c.is_whitespace())
+                    .map(|(s, _)| s)
+                    .unwrap_or(s);
+                this.ignore.push(s.to_owned());
+            }
+            if let Some(s) = line.strip_prefix("// only-") {
+                let s = s
+                    .split_once(|c: char| c == ':' || c.is_whitespace())
+                    .map(|(s, _)| s)
+                    .unwrap_or(s);
+                this.only.push(s.to_owned());
             }
         }
         this

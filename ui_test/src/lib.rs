@@ -70,7 +70,7 @@ pub fn run_tests(config: Config) {
                     total.fetch_add(1, Ordering::Relaxed);
                     let comments = Comments::parse(&path);
                     // Read rules for skipping from file
-                    if ignore_file(&path, &target) {
+                    if ignore_file(&comments, &target) {
                         skipped.fetch_add(1, Ordering::Relaxed);
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
                         continue;
@@ -323,28 +323,21 @@ fn compare_output(path: &Path, actual: &str, expected: &str) {
     eprintln!()
 }
 
-fn ignore_file(p: &Path, target: &str) -> bool {
-    let content = std::fs::read_to_string(p).unwrap();
-    for line in content.lines() {
-        if let Some(s) = line.strip_prefix("// ignore-") {
-            let s =
-                s.split_once(|c: char| c == ':' || c.is_whitespace()).map(|(s, _)| s).unwrap_or(s);
-            if target.contains(s) {
-                return true;
-            }
-            if get_pointer_width(target).contains(s) {
-                return true;
-            }
+fn ignore_file(comments: &Comments, target: &str) -> bool {
+    for s in &comments.ignore {
+        if target.contains(s) {
+            return true;
         }
-        if let Some(s) = line.strip_prefix("// only-") {
-            let s =
-                s.split_once(|c: char| c == ':' || c.is_whitespace()).map(|(s, _)| s).unwrap_or(s);
-            if !target.contains(s) {
-                return true;
-            }
-            if !get_pointer_width(target).contains(s) {
-                return true;
-            }
+        if get_pointer_width(target).contains(s) {
+            return true;
+        }
+    }
+    for s in &comments.only {
+        if !target.contains(s) {
+            return true;
+        }
+        if !get_pointer_width(target).contains(s) {
+            return true;
         }
     }
     false
