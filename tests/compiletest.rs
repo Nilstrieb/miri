@@ -84,8 +84,8 @@ regexes! {
     "([0-9]+: .*)::<.*>"             => "$1",
     // erase addresses in backtraces
     "([0-9]+: ) +0x[0-9a-f]+ - (.*)" => "$1$2",
-    // erase hexadecimals
-    r"0x[0-9a-fA-F]+(\[a[0-9]+\])?" => "$$HEX",
+    // erase long hexadecimals
+    r"0x[0-9a-fA-F]+[0-9a-fA-F]{2,2}" => "$$HEX",
     // erase clocks
     r"VClock\(\[[^\]]+\]\)"      => "VClock",
     // erase specific alignments
