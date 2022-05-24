@@ -1,5 +1,7 @@
 use std::path::Path;
 
+use regex::Regex;
+
 /// This crate supports various magic comments that get parsed as file-specific
 /// configuration values. This struct parses them all in one go and then they
 /// get processed by their respective use sites.
@@ -17,6 +19,8 @@ pub struct Comments {
     pub compile_flags: Vec<String>,
     /// Additional env vars to set for the executable
     pub env_vars: Vec<(String, String)>,
+    /// Normalizations to apply to the stderr output before emitting it to disk
+    pub normalize_stderr: Vec<(Regex, String)>,
 }
 
 impl Comments {
@@ -65,6 +69,13 @@ impl Comments {
                         this.env_vars.push((k.to_string(), v.to_string()));
                     }
                 }
+            }
+            if let Some(s) = line.strip_prefix("// normalize-stderr-test") {
+                let (from, to) = s.split_once("->").expect("normalize-stderr-test needs a `->`");
+                let from = from.trim().trim_matches('"');
+                let to = to.trim().trim_matches('"');
+                let from = Regex::new(from).unwrap();
+                this.normalize_stderr.push((from, to.to_string()));
             }
         }
         this

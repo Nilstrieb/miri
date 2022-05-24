@@ -298,7 +298,7 @@ fn check_output(
     comments: &Comments,
 ) {
     let output = std::str::from_utf8(&output).unwrap();
-    let output = normalize(path, output, filters);
+    let output = normalize(path, output, filters, comments);
     let path = output_path(path, comments, kind, target);
     if config.bless {
         if output.is_empty() {
@@ -369,9 +369,7 @@ fn get_pointer_width(triple: &str) -> &'static str {
     }
 }
 
-fn normalize(path: &Path, text: &str, filters: &Filter) -> String {
-    let content = std::fs::read_to_string(path).unwrap();
-
+fn normalize(path: &Path, text: &str, filters: &Filter, comments: &Comments) -> String {
     // Useless paths
     let mut text = text.replace(&path.parent().unwrap().display().to_string(), "$DIR");
     if let Some(lib_path) = option_env!("RUSTC_LIB_PATH") {
@@ -382,14 +380,8 @@ fn normalize(path: &Path, text: &str, filters: &Filter) -> String {
         text = regex.replace_all(&text, *replacement).to_string();
     }
 
-    for line in content.lines() {
-        if let Some(s) = line.strip_prefix("// normalize-stderr-test") {
-            let (from, to) = s.split_once("->").expect("normalize-stderr-test needs a `->`");
-            let from = from.trim().trim_matches('"');
-            let to = to.trim().trim_matches('"');
-            let from = Regex::new(from).unwrap();
-            text = from.replace_all(&text, to).to_string();
-        }
+    for (from, to) in &comments.normalize_stderr {
+        text = from.replace_all(&text, to).to_string();
     }
     text
 }
