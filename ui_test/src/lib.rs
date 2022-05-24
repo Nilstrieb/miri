@@ -4,6 +4,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 
 use colored::*;
+use comments::ErrorMatch;
 use crossbeam::queue::SegQueue;
 use regex::Regex;
 
@@ -231,54 +232,46 @@ fn run_test(
         &config,
         comments,
     );
-    check_annotations(path, &output.stderr, &mut errors, config, revision);
+    check_annotations(&output.stderr, &mut errors, config, revision, comments);
     (miri, errors)
 }
 
 fn check_annotations(
-    path: &Path,
     unnormalized_stderr: &[u8],
     errors: &mut Errors,
     config: &Config,
     revision: &str,
+    comments: &Comments,
 ) {
     let unnormalized_stderr = std::str::from_utf8(unnormalized_stderr).unwrap();
-    let content = std::fs::read_to_string(path).unwrap();
     let mut found_annotation = false;
-    let regex =
-        Regex::new(r"//(\[(?P<revision>[^\]]+)\])?~[|^]*\s*(ERROR|HELP|WARN)?:?(?P<text>.*)")
-            .unwrap();
-    for (i, line) in content.lines().enumerate() {
-        if let Some(s) = line.strip_prefix("// error-pattern:") {
-            let s = s.trim();
-            if !unnormalized_stderr.contains(s) {
-                errors.push(Error::PatternNotFound {
-                    stderr: unnormalized_stderr.to_string(),
-                    pattern: s.to_string(),
-                    definition_line: i,
-                });
-            }
-            found_annotation = true;
+    if let Some((ref error_pattern, definition_line)) = comments.error_pattern {
+        if !unnormalized_stderr.contains(error_pattern) {
+            errors.push(Error::PatternNotFound {
+                stderr: unnormalized_stderr.to_string(),
+                pattern: error_pattern.to_string(),
+                definition_line,
+            });
         }
-        if let Some(captures) = regex.captures(line) {
-            // FIXME: check that the error happens on the marked line
-            let matched = captures["text"].trim();
+        found_annotation = true;
+    }
+    for &ErrorMatch { ref matched, revision: ref rev, definition_line } in &comments.error_matches {
+        // FIXME: check that the error happens on the marked line
 
-            if let Some(rev) = captures.name("revision") {
-                if rev.as_str() != revision {
-                    continue;
-                }
+        if let Some(rev) = rev {
+            if rev != revision {
+                continue;
             }
-
-            if !unnormalized_stderr.contains(matched) {
-                errors.push(Error::PatternNotFound {
-                    stderr: unnormalized_stderr.to_string(),
-                    pattern: matched.to_string(),
-                    definition_line: i,
-                });
-            }
-            found_annotation = true;
         }
+
+        if !unnormalized_stderr.contains(matched) {
+            errors.push(Error::PatternNotFound {
+                stderr: unnormalized_stderr.to_string(),
+                pattern: matched.to_string(),
+                definition_line,
+            });
+        }
+        found_annotation = true;
     }
     match (config.mode, found_annotation) {
         (Mode::Pass, true) | (Mode::Panic, true) => errors.push(Error::PatternFoundInPassTest),

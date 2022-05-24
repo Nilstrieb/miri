@@ -21,12 +21,18 @@ pub struct Comments {
     pub env_vars: Vec<(String, String)>,
     /// Normalizations to apply to the stderr output before emitting it to disk
     pub normalize_stderr: Vec<(Regex, String)>,
+    /// An arbitrary pattern to look for in the stderr.
+    pub error_pattern: Option<(String, usize)>,
+    pub error_matches: Vec<ErrorMatch>,
 }
 
 impl Comments {
     pub fn parse(path: &Path) -> Self {
         let mut this = Self::default();
         let content = std::fs::read_to_string(path).unwrap();
+        let error_pattern_regex =
+            Regex::new(r"//(\[(?P<revision>[^\]]+)\])?~[|^]*\s*(ERROR|HELP|WARN)?:?(?P<text>.*)")
+                .unwrap();
         for (l, line) in content.lines().enumerate() {
             if let Some(revisions) = line.strip_prefix("// revisions:") {
                 assert_eq!(
@@ -77,7 +83,29 @@ impl Comments {
                 let from = Regex::new(from).unwrap();
                 this.normalize_stderr.push((from, to.to_string()));
             }
+            if let Some(s) = line.strip_prefix("// error-pattern:") {
+                assert_eq!(
+                    this.error_pattern,
+                    None,
+                    "{}:{l}, cannot specifiy error_pattern twice",
+                    path.display()
+                );
+                this.error_pattern = Some((s.trim().to_string(), l));
+            }
+            if let Some(captures) = error_pattern_regex.captures(line) {
+                // FIXME: check that the error happens on the marked line
+                let matched = captures["text"].trim().to_string();
+
+                let revision = captures.name("revision").map(|rev| rev.as_str().to_string());
+                this.error_matches.push(ErrorMatch { matched, revision, definition_line: l });
+            }
         }
         this
     }
+}
+
+pub struct ErrorMatch {
+    pub matched: String,
+    pub revision: Option<String>,
+    pub definition_line: usize,
 }
