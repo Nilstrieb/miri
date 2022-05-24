@@ -38,13 +38,14 @@ pub type Filter = Vec<(Regex, &'static str)>;
 pub fn run_tests(config: Config) {
     eprintln!("   Compiler flags: {:?}", config.args);
 
+    // Get the triple with which to run the tests
     let target = config.target.clone().unwrap_or_else(|| config.get_host());
 
-    let grab_entries =
-        |path: &Path| std::fs::read_dir(path).unwrap().map(|entry| entry.unwrap().path());
+    // A queue for files or folders to process
     let todo = SegQueue::new();
     todo.push(config.root_dir.clone());
 
+    // Some statistics and failure reports.
     let failures = Mutex::new(vec![]);
     let total = AtomicUsize::default();
     let skipped = AtomicUsize::default();
@@ -55,8 +56,8 @@ pub fn run_tests(config: Config) {
                 while let Some(path) = todo.pop() {
                     // Collect everything inside directories
                     if path.is_dir() {
-                        for entry in grab_entries(&path) {
-                            todo.push(entry);
+                        for entry in std::fs::read_dir(path).unwrap() {
+                            todo.push(entry.unwrap().path());
                         }
                         continue;
                     }
@@ -76,6 +77,7 @@ pub fn run_tests(config: Config) {
                         eprintln!("{} .. {}", path.display(), "skipped".yellow());
                         continue;
                     }
+                    // Run the test for all revisions
                     for revision in
                         comments.revisions.clone().unwrap_or_else(|| vec![String::new()])
                     {
@@ -100,6 +102,7 @@ pub fn run_tests(config: Config) {
     })
     .unwrap();
 
+    // Print all errors in a single thread to show reliable output
     let failures = failures.into_inner().unwrap();
     let total = total.load(Ordering::Relaxed);
     let skipped = skipped.load(Ordering::Relaxed);
@@ -172,6 +175,7 @@ enum Error {
     NoPatternsFound,
     /// A ui test checking for success has failure patterns
     PatternFoundInPassTest,
+    /// Stderr/Stdout differed from the `.stderr`/`.stdout` file present.
     OutputDiffers {
         path: PathBuf,
         actual: String,
@@ -213,6 +217,7 @@ fn run_test(
             format!("{}.{}", revision, extension)
         }
     };
+    // Check output files against actual output
     check_output(
         &output.stderr,
         path,
@@ -233,6 +238,7 @@ fn run_test(
         &config,
         comments,
     );
+    // Check error annotations in the source against output
     check_annotations(&output.stderr, &mut errors, config, revision, comments);
     (miri, errors)
 }
