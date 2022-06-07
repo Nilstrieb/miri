@@ -139,6 +139,33 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriEvalContextExt<'mir, 'tcx
                 this.write_scalar(Scalar::from_machine_isize(result, this), dest)?;
             }
 
+            // networking
+            "socket" => {
+                let &[ref domain, ref kind, ref protocol] = this.check_shim(abi, Abi::C { unwind: false }, link_name, args)?;
+                let result = this.socket(domain, kind, protocol)?;
+                this.write_scalar(Scalar::from_i32(result), dest)?;
+            }
+            "setsockopt" => {
+                let &[ref sockfd, ref level, ref optname, ref optval, ref optlen] = this.check_shim(abi, Abi::C { unwind: false }, link_name, args)?;
+                let result = this.setsockopt(sockfd, level, optname, optval, optlen)?;
+                this.write_scalar(Scalar::from_i32(result), dest)?;
+            }
+            "bind" => {
+                let &[ref sockfd, ref addr, ref addrlen] = this.check_shim(abi, Abi::C { unwind: false }, link_name, args)?;
+                let result = this.bind(sockfd, addr, addrlen)?;
+                this.write_scalar(Scalar::from_i32(result), dest)?;
+            }
+            "listen" => {
+                let &[ref sockfd, ref backlog] = this.check_shim(abi, Abi::C { unwind: false }, link_name, args)?;
+                let result = this.listen(sockfd, backlog)?;
+                this.write_scalar(Scalar::from_i32(result), dest)?;
+            }
+            "getsockname" => {
+                let &[ref sockfd, ref addr, ref addrlen] = this.check_shim(abi, Abi::C { unwind: false }, link_name, args)?;
+                let result = this.getsockname(sockfd, addr, addrlen)?;
+                this.write_scalar(Scalar::from_i32(result), dest)?;
+            }
+
             // Allocation
             "posix_memalign" => {
                 let [ret, align, size] = this.check_shim(abi, Abi::C { unwind: false }, link_name, args)?;
